@@ -12,7 +12,7 @@ export const  fetchBoard = async() =>{
  * @returns {Promise<{ board: string[][], status: string, message?: string }>}
  */
 // gửi nước đi lên server sendmove
-const sendMove = async(from,to)=>{
+export const sendMove = async(from,to)=>{
     const res = await fetch(`${BASE_URL}/move`,{
         method:"POST",
         headers:{"Content_Type":"application/json"},
