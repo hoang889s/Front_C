@@ -9,7 +9,7 @@ const Board = ({board})=>{
         width: "fit-content",
     }}>
         {flatBoard.map((cell,index)=>(
-            <Cell key={index} value={cell} index={index}/>
+            <Cell key={index} value={cell} index={index} />
         ))}
     </div>);
 }
