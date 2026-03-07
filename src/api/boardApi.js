@@ -15,10 +15,36 @@ export const  fetchBoard = async() =>{
 export const sendMove = async(from,to)=>{
     const res = await fetch(`${BASE_URL}/move`,{
         method:"POST",
-        headers:{"Content_Type":"application/json"},
+        headers:{"Content-Type":"application/json"},
         body:JSON.stringify({from,to}),
     });
     if (!res.ok) throw new Error(`!Lỗi Http trạng thái:${res.status}`);
     return res.json();
 
 };
+/**
+ * Lấy danh sách nước đi hợp lệ cho quân tại ô (row, col).
+ * @param {number} row
+ * @param {number} col
+ * @returns {Promise<{ row: number, col: number }[]>}
+ */
+
+export const fetchLegalMoves = async(row,col)=>{
+    const res = await fetch(`${BASE_URL}/legal-moves?row=${row}&col=${col}`);
+    if(!res.ok){
+        throw new Error(`HTTP Lỗi trạng thái: ${res.status}`);
+    }
+    const data = await res.json();
+    return data.moves ?? [];
+}
+/**
+ * Reset game về trạng thái ban đầu.
+ * @returns {Promise<{ board: string[][], turn: string, game_status: object }>}
+ */
+export const resetGame = async () =>{
+    const res = await fetch(`${BASE_URL}/reset`, { method: "POST" });
+    if (!res.ok){
+        throw new Error(`HTTP Lỗi trạng thái: ${res.status}`);
+    }
+    return res.json();
+}

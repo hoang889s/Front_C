@@ -2,9 +2,10 @@ import Cell from "./Cell";
 /**
  * @param {string[][]} board          - Ma trận 8x8
  * @param {{row,col}|null} selected   - Ô đang chọn
+ * @param {function} isLegalTarget         - (row, col) => boolean
  * @param {function} onCellClick      - (row, col) => void
  */
-const Board = ({board,selected,onCellClick})=>{
+const Board = ({board,selected,isLegalTarget,onCellClick})=>{
     return (
     <div style={{
         display: "grid",
@@ -21,6 +22,7 @@ const Board = ({board,selected,onCellClick})=>{
                 row = {r}
                 col = {c}
                 isSelected = {selected?.row === r && selected?.col === c}
+                isLegalTarget={isLegalTarget(r, c)}
                 onClick={() => onCellClick(r, c)}
             />
         ))
