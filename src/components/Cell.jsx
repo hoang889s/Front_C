@@ -6,7 +6,7 @@ const CELL_SIZE = 60;
  * @param {boolean}     isSelected - Ô đang được chọn
  * @param {function}    onClick    - Callback khi click
  */
-const Cell =({value,row,col,isSelected,onClick})=>{
+const Cell =({value,row,col,isSelected,isLegalTarget,onClick})=>{
 
     const isLight = (row+col)%2 === 0;
      const bgColor = isSelected
@@ -30,8 +30,33 @@ const Cell =({value,row,col,isSelected,onClick})=>{
                 cursor: value ? "pointer" : "default",
                 userSelect: "none",
                 transition: "background-color 0.15s",
+                 position: "relative",
         }}
         >
+            {/* Highlight ô hợp lệ */}
+            {isLegalTarget &&(
+                 // Ô trống → chấm tròn ở giữa
+                <div style ={{
+                    position: "absolute",
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(0,0,0,0.20)",
+                    pointerEvents: "none",
+                }}
+                />
+            )}
+            {isLegalTarget && value && (
+                // Có quân địch → viền vòng tròn (có thể ăn)
+                <div style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: "50%",
+                border: "5px solid rgba(0,0,0,0.22)",
+                pointerEvents: "none",
+        }} />
+      )}
+
             {value}
         </div>
     );
