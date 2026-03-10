@@ -13,7 +13,21 @@ const pieceColor = (piece)=>{
     }
     return null;
 }
-
+/**
+ * Kiểm tra nước đi có phải phong quân không.
+ * Tốt trắng (P) đến hàng 0 hoặc tốt đen (p) đến hàng 7.
+ * Kiểm tra xem hàm đã đến cuối hàng hay chưa
+ */
+const isPromotionMove = (board,from,to)=>{
+    const piece = board[from.row]?.[from.col];
+    if (piece === "P" && to.row === 0){
+        return true;
+    }
+    if (piece === "p" && to.row === 7){
+        return true;
+    }
+    return false;
+}
 const useBoard = () =>{
     const [board,setBoard] = useState([]);
     const [loading,setLoading] = useState(true);
@@ -34,6 +48,8 @@ const useBoard = () =>{
     *   { state: "stalemate" }
     */
     const [gameStatus,setGameStatus] = useState({state:"ongoing"});
+    // nước đi đang chờ chọn quân phong: { from, to } | null
+    const [pendingPromotion,setPendingPromotion] = useState(null);
     useEffect(()=>{
         setLoading(true)
         fetchBoard()
@@ -55,9 +71,64 @@ const useBoard = () =>{
             .catch((err)=>setError(err.message))
             .finally(()=>setLoading(false));
     },[]);
+    // hàm xử lý kết quả trả về từ server khi gửi move 
+    const applyMoveResult = useCallback((result)=>{
+        // load bảng nếu tìm thấy bảng
+        if(result.board) {
+            setBoard(result.board);
+        }
+        // nếu không hợp lệ sau 1500 ms thì sẽ null
+        if (result.status === "invalid"){
+            setMoveStatus("invalid")
+            setTimeout(()=>setMoveStatus(null),1500);
+            return;
+        }
+        // nếu thấy lượt trắng thì hãy xét lượt trắng
+        if (result.turn){
+            setTurn(result.turn);
+        }
+        // trả về trạng thái game thắng thua hòa
+        if(result.game_status){
+            setGameStatus(result.game_status);
+
+        }
+        // nếu tất cả không thì di chuyển là null
+        setMoveStatus(null);
+    },[])
+    // hàm xử lý phong quân 
+    const handlePromotionSelect = useCallback(
+        // truyên vào tham quân cờ phong
+        async (promotionPiece)=>{
+            // nếu không phong quân không làm gì cả
+            if(!pendingPromotion){
+                return;
+            }
+            // tọa độ gán được gán bằng pendingPromotion
+            const {from,to} = pendingPromotion;
+            // set lại null
+            setPendingPromotion(null);
+            // set trạng thái là suy nghĩ
+            setMoveStatus("thinking");
+            // đúng 
+            try {
+                // gửi quân phong và tọa độ đi
+                const result = await sendMove(from,to,promotionPiece);
+                applyMoveResult(result); 
+            }
+            // sai
+            catch(err){
+                // nhả lỗi
+                setError(err.message);
+                setMoveStatus(null);
+            }
+        },
+        [pendingPromotion,applyMoveResult]
+    )
     // lưu một function click để re-render
     const handleCellClick = useCallback(
         async (row , col)=>{
+            // đang chờ phong quân nếu có , không cho click
+            if (pendingPromotion) return;
             // quy trình cụ thể là khi chưa chọn -> chọn ô -> + bỏ chọn ô đó hoặc chọn ô khác
             // nếu là move status thì trả về (đang chờ ai suy nghĩ) không cho nhấn chuột
             if (moveStatus ==="thinking"||gameStatus.state === "checkmate"||gameStatus.state ==="stalemate"){
@@ -107,10 +178,17 @@ const useBoard = () =>{
             const to= {row,col};
             setSelected(null);
             setLegalMoves([]);
+            // kiểm tra có cần phong quân không
+            if(isPromotionMove(board,from,to)){
+                // lưu lại và mởi modal - chưa gửi lên server
+                setPendingPromotion({from,to});
+                return;
+            }
             setMoveStatus("thinking");
             try{
                 const result = await sendMove(from,to);
-                // Cập nhật bàn cờ dù hợp lệ hay không
+                applyMoveResult(result);
+                /*// Cập nhật bàn cờ dù hợp lệ hay không
                 if (result.board){
                     setBoard(result.board);
                 }
@@ -130,14 +208,14 @@ const useBoard = () =>{
                 // Nước hợp lệ → đổi lượt (hoặc dùng turn từ server nếu có)
                 //setTurn((prev) => (prev === "white" ? "black" : "white"));
                 //setMoveStatus(result.status ?? "ok");
-                //setTimeout(() => setMoveStatus(null), 1500);
+                //setTimeout(() => setMoveStatus(null), 1500);*/
             }
             catch(err){
                 setError(err.message);
                 setMoveStatus(null);
             }
         },
-        [board, selected, turn, moveStatus,gameStatus]
+        [board, selected, turn, moveStatus,gameStatus,pendingPromotion,applyMoveResult]
     );
     // reset game
     const resetGame = useCallback(async()=>{
@@ -149,6 +227,7 @@ const useBoard = () =>{
             setSelected(null);
             setLegalMoves([]);
             setMoveStatus(null);
+            setPendingPromotion(null);
             setError(null);
         }
         catch(err){
@@ -159,6 +238,6 @@ const useBoard = () =>{
     const isLegalTarget = useCallback(
          (row, col) => legalMoves.some((m) => m.row === row && m.col === col),[legalMoves]
     )
-    return {board,loading,error,selected,legalMoves,isLegalTarget,turn,moveStatus,gameStatus,handleCellClick,resetGame,};
+    return {board,loading,error,selected,legalMoves,isLegalTarget,turn,moveStatus,gameStatus,handleCellClick,resetGame,pendingPromotion,handlePromotionSelect};
 };
 export default useBoard;

@@ -9,10 +9,15 @@ export const  fetchBoard = async() =>{
  * Gửi nước đi lên server.
  * @param {{row: number, col: number}} from - Ô xuất phát
  * @param {{row: number, col: number}} to   - Ô đích
+ * @param {string|null} promotion           - Quân phong nếu có: "Q"|"R"|"B"|"N"
  * @returns {Promise<{ board: string[][], status: string, message?: string }>}
  */
 // gửi nước đi lên server sendmove
-export const sendMove = async(from,to)=>{
+export const sendMove = async(from,to,promotion=null)=>{
+    const body = {from,to};
+    if(promotion){
+        body.promotion = promotion;
+    }
     const res = await fetch(`${BASE_URL}/move`,{
         method:"POST",
         headers:{"Content-Type":"application/json"},
