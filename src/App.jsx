@@ -1,12 +1,30 @@
 import { useState } from "react";
 import GamePage from "./pages/GamePage";
 import OnlinePage from "./pages/OnlinePage";
+import AuthPage from "./pages/AuthPage";
+import { logout } from "./api/authApi";
 const PAGES ={
   vs_ai: { label: "Chơi với Máy", component: GamePage },
   online: { label: "Chơi Online", component: OnlinePage },
 }
 const App = () => {
   const [currentPage,setCurrentPage] = useState("vs_ai");
+  
+  // khai báo user state để lưu thông tin người dùng sau khi đăng nhập thành công, hiện tại chưa sử dụng nhưng sẽ cần trong tương lai khi triển khai tính năng online
+  const [user, setUser] = useState(null);
+  // Callback khi AuthPage đăng nhập / đăng ký thành công
+  const handleAuthSuccess = (userData) => {
+    setUser(userData);
+  };
+   // Đăng xuất
+  const handleLogout = async () => {
+    await logout();
+    setUser(null);
+  };
+  // Nếu chưa đăng nhập → hiện AuthPage
+  if (!user) {
+    return <AuthPage onAuthSuccess={handleAuthSuccess} />;
+  }
   const PageComponent = PAGES[currentPage].component;
   return(
     <div style={appStyle}>
@@ -23,6 +41,14 @@ const App = () => {
               {label}
             </button>
           ))}
+        </div>
+        {/* Thông tin user + nút đăng xuất */}
+        <div style={userAreaStyle}>
+          <span style={usernameStyle}>♟ {user.username}</span>
+          <button style={logoutBtnStyle} onClick={handleLogout}>
+             Đăng xuất
+          </button>
+
         </div>
       </nav>
        {/* Page Content */}
@@ -69,4 +95,25 @@ const tabStyle = (active) => ({
   color: active ? "#fff" : "#ccc",
   transition: "background 0.2s, color 0.2s",
 });
+const userAreaStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "12px",
+  marginLeft: "auto",
+};
+const usernameStyle = {
+  color: "#e2e8f0",
+  fontSize: "14px",
+};
+ 
+const logoutBtnStyle = {
+  padding: "6px 14px",
+  fontSize: "13px",
+  cursor: "pointer",
+  border: "1px solid #e94560",
+  borderRadius: "6px",
+  backgroundColor: "transparent",
+  color: "#e94560",
+  transition: "background 0.2s, color 0.2s",
+};
 export default App;
