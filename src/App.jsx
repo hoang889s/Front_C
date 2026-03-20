@@ -3,18 +3,33 @@ import GamePage from "./pages/GamePage";
 import OnlinePage from "./pages/OnlinePage";
 import AuthPage from "./pages/AuthPage";
 import { logout } from "./api/authApi";
-const PAGES ={
+import AdminPage from "./pages/AdminPage";
+/*const PAGES ={
   vs_ai: { label: "Chơi với Máy", component: GamePage },
   online: { label: "Chơi Online", component: OnlinePage },
+}*/
+const getPages = (role) =>{
+  const pages = {
+    vs_ai:  { label: "Chơi với Máy", component: GamePage },
+    online: { label: "Chơi Online",  component: OnlinePage },
+
+  };
+  if (role === "admin"){
+    pages.admin = { label: "Quản trị", component: AdminPage };
+  }
+  return pages;
 }
+//const PAGES = getPages(user?.role);
 const App = () => {
   const [currentPage,setCurrentPage] = useState("vs_ai");
   
   // khai báo user state để lưu thông tin người dùng sau khi đăng nhập thành công, hiện tại chưa sử dụng nhưng sẽ cần trong tương lai khi triển khai tính năng online
   const [user, setUser] = useState(null);
+  const PAGES = getPages(user?.role);
   // Callback khi AuthPage đăng nhập / đăng ký thành công
   const handleAuthSuccess = (userData) => {
     setUser(userData);
+    setCurrentPage("vs_ai");
   };
    // Đăng xuất
   const handleLogout = async () => {
