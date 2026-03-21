@@ -1,7 +1,8 @@
+import { getToken } from "./authApi";
 const BASE = "http://127.0.0.1:8000/admin";
 const authHeader =()=>({
     "Content-Type": "application/json",
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
+    Authorization: `Bearer ${getToken()}`,
 });
 // lấy danh sách user có phân trang
 export const getUsers = async(page = 1,perPage = 20)=>{

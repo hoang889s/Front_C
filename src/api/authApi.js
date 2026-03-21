@@ -18,6 +18,7 @@ const authHeaders = () => {
  * @param {string} email
  * @param {string} password
  */
+//console.log("in ra:",localStorage.getItem("chess_token"))
 export const register = async (username,email,password)=>{
     const res = await fetch(`${BASE_URL}/auth/register`,{
         method:"POST",
@@ -69,4 +70,11 @@ export const logout = async () => {
   });
   removeToken();
 };
+console.log("token hien tai:",localStorage.getItem("chess_token"))
+/*fetch("http://127.0.0.1:8000/admin/users?page=1&per_page=10", {
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + localStorage.getItem("chess_token")
+  }
+}).then(r => r.json()).then(d => console.log(JSON.stringify(d)))*/
 export { getToken, setToken, removeToken };
