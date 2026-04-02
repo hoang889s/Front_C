@@ -1,23 +1,46 @@
+import { useEffect,useState } from "react";
+import {getRooms,createRoom,joinRoom} from "../api/roomApi";
+ 
+
 const OnlinePage = () => {
+  const [rooms,setRooms] = useState([]);
+  const [code, setCode] = useState("");
+  useEffect(()=>{
+    loadRooms();
+  },[]);
+  const loadRooms = async()=>{
+    const data = await getRooms();
+    setRooms(data.rooms||[]);
+  }
+  const handleCreate = async()=>{
+    //e.preventDefault();
+    const res = await createRoom({
+      mode:"pvp",
+      host_color:"white",
+    });
+    console.log(res);
+    loadRooms();
+  };
+  const handleJoin = async()=>{
+    const res = await joinRoom(code);
+    console.log(res);
+  }
   return (
-    <div style={{ padding: "30px", fontFamily: "sans-serif", textAlign: "center" }}>
-      <h2 style={{ marginBottom: "16px" }}>🌐 Chơi Online (2 người)</h2>
-      <p style={{ color: "#666", fontSize: "15px", marginBottom: "24px" }}>
-        Tính năng chơi 2 người online đang được phát triển. Vui lòng quay lại sau!
-      </p>
-      <div
-        style={{
-          display: "inline-block",
-          padding: "20px 40px",
-          border: "2px dashed #ccc",
-          borderRadius: "12px",
-          color: "#aaa",
-          fontSize: "14px",
-        }}
-      >
-            Coming Soon
+      <div>
+        <h1>Danh sách phòng</h1>
+        <button type="button" onClick={handleCreate}>Tạo phòng</button>
+        <div>
+          <input
+            placeholder="Nhập mã phòng" value={code} onChange={(e)=>setCode(e.target.value)}
+          />
+          <button onClick={handleJoin}>Vào phòng</button>
+        </div>
+        <ul>
+          {rooms.map((r)=>(
+            <li key={r.id}>{r.code}</li>
+          ))}
+        </ul>
       </div>
-    </div>
   );
 };
 
