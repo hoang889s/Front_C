@@ -1,5 +1,5 @@
 import { useEffect,useState } from "react";
-import {getRooms,createRoom,joinRoom} from "../api/roomApi";
+import {getRooms,createRoom,joinRoom,leaveRoom} from "../api/roomApi";
  
 
 const OnlinePage = () => {
@@ -24,6 +24,14 @@ const OnlinePage = () => {
   const handleJoin = async()=>{
     const res = await joinRoom(code);
     console.log(res);
+  };
+  const handleLeave = async()=>{
+    try{
+      const data = await leaveRoom("ABC12345");
+    }
+    catch(err){
+      console.error(err.message);
+    }
   }
   return (
       <div>
