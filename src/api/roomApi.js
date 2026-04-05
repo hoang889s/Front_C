@@ -49,6 +49,7 @@ export const createRoom = async(data)=>{
             "Content-Type": "application/json",
             Authorization: `Bearer ${getToken()}`
         },
+        body: JSON.stringify(data),
     });
     console.log(res);
     return handleResponse(res);
