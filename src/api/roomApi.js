@@ -31,16 +31,31 @@ const handleResponse = async(res)=>{
     }
     return data;
 }
-// lấy dữ liệu phòng
-export const getRooms = async ()=>{
-    const res = await fetch(`${BASE_URL}/rooms/`, {
+// lấy dữ  liệu nhiều phòng
+export const getRooms = async (status = "waiting",mode)=>{
+    const params = new URLSearchParams({status});
+    if (mode) {
+        params.append("mode",mode);
+    }
+    const res = await fetch(`${BASE_URL}/rooms/?${params}`, {
         method:"GET",
         headers:{
-            Authorization: `Bearer ${getToken()}`
+            Authorization:`Bearer ${getToken()}`,
         },
     });
     return handleResponse(res);
 }
+// lấy dữ liệu một phòng theo code
+export const getRoom = async(code)=>{
+    const res = await fetch(`${BASE_URL}/rooms/${code}`,{
+        method:"GET",
+        headers:{
+            Authorization: `Bearer ${getToken()}`,
+        }
+    });
+    return handleResponse(res);
+}
+
 // hàm tạo phòng từ api về
 export const createRoom = async(data)=>{
     const res = await fetch(`${BASE_URL}/rooms/create`, {
@@ -76,4 +91,17 @@ export const leaveRoom = async(code)=>{
         }
     });
     return handleResponse(res);
+}
+// kết thúc ván đấu
+export const endRoom = async(code,result = "draw")=>{
+    const res = await fetch(`${BASE_URL}/rooms/${code}/end`,{
+        method:"POST",
+        headers:{
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+        },
+        body:JSON.stringify({result}),
+
+    });
+    return handleResponse(res)
 }
