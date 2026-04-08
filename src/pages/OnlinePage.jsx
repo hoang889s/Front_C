@@ -7,7 +7,7 @@ const OnlinePage = ({onEnterRoom}) => {
   //const navigate = useNavigate();
   const [rooms,setRooms] = useState([]);
   const [code, setCode] = useState("");
-  const [myRoom,setMyRoom] = useState(null);
+  //const [myRoom,setMyRoom] = useState(null);
   const [loading,setLoading] = useState(false);
   // Modal tạo phòng
   const [showCreate,setShowCreate] = useState(false);
@@ -43,7 +43,8 @@ const OnlinePage = ({onEnterRoom}) => {
       };
       const res = await createRoom(payload);
       setShowCreate(false);
-      navigate(`/online/${res.room.code}`, { state: { room: res.room, role: "host" } });
+      onEnterRoom(res.room,"host");
+      //navigate(`/online/${res.room.code}`, { state: { room: res.room, role: "host" } });
       
     }
     catch (err){
@@ -54,21 +55,7 @@ const OnlinePage = ({onEnterRoom}) => {
       setLoading(false);  
     }
   };
-  const handleJoin = async()=>{
-    if(!code.trim()){
-      return alert("Nhập mã phòng");
-    }
-    try{
-      const res = await joinRoom(code.trim());
-      console.log("Vào phòng",res);
-      setMyRoom(res.room);
-      setCode("");
-    }
-    catch (err){
-      console.error("Vào phòng thất bại:", err.message);
-      alert(err.message);
-    }
-  };
+
   const handleLeave = async()=>{
     if (!myRoom) {
       return;
@@ -92,7 +79,7 @@ const OnlinePage = ({onEnterRoom}) => {
     setLoading(true);
     try{
       const res = await joinRoom(code.trim());
-      navigate(`/online/${res.room.code}`, { state: { room: res.room, role: "guest" } });
+      onEnterRoom(res.room,"guest");
 
     }
     catch (err){
@@ -107,7 +94,8 @@ const OnlinePage = ({onEnterRoom}) => {
     setLoading(true);
     try{
       const res = await joinRoom(roomCode);
-      navigate(`/online/${res.room.code}`, { state: { room: res.room, role: "guest" } });
+      //navigate(`/online/${res.room.code}`, { state: { room: res.room, role: "guest" } });
+      onEnterRoom(res.room,"guest");
     }
     catch (err){
       alert(err.message);
