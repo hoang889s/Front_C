@@ -4,7 +4,7 @@ import OnlinePage from "./pages/OnlinePage";
 import AuthPage from "./pages/AuthPage";
 import { logout } from "./api/authApi";
 import AdminPage from "./pages/AdminPage";
-import OnlineGamePage from "./pages/OnlinegamePage";
+//import OnlineGamePage from "./pages/OnlinegamePage";
 /*const PAGES ={
   vs_ai: { label: "Chơi với Máy", component: GamePage },
   online: { label: "Chơi Online", component: OnlinePage },
@@ -80,11 +80,6 @@ const App = () => {
         </nav>
         {/* Page Content */}
         <main>
-          <OnlineGamePage
-            room={onlineRoom.room}
-            role={onlineRoom.role}
-            onLeaveRoom={handleLeaveRoom}
-          />
         </main>
       </div>
     );

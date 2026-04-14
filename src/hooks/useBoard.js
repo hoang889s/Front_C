@@ -28,7 +28,7 @@ const isPromotionMove = (board,from,to)=>{
     }
     return false;
 }
-const useBoard = () =>{
+const useBoard = ({mode = "pva",roomCode=null,myColor=null,pollInterval = 2000}={}) =>{
     const [board,setBoard] = useState([]);
     const [loading,setLoading] = useState(true);
     const [error,setError] = useState(null);
@@ -50,7 +50,29 @@ const useBoard = () =>{
     const [gameStatus,setGameStatus] = useState({state:"ongoing"});
     // nước đi đang chờ chọn quân phong: { from, to } | null
     const [pendingPromotion,setPendingPromotion] = useState(null);
+    // cập nhật lượt
+    const isMyTurn = mode === "pva" || turn === myColor;
+    // load bàn cờ
+    const loadBoard= useCallback(async()=>{
+        try{
+            const data = await fetchBoard(roomCode);
+            if(data.board){
+                setBoard(data.board);
+                setTurn(data.turn);
+                setGameStatus(data.game_status);
+            }
+
+        }
+        catch(err){
+            setError(err.message);
+        }
+    },[roomCode]);
+    //
     useEffect(()=>{
+        setLoading(true);
+        loadBoard().finally(()=>setLoading(false));
+    },[loadBoard]);
+    /*useEffect(()=>{
         setLoading(true)
         fetchBoard()
             .then((data)=>{
@@ -70,7 +92,15 @@ const useBoard = () =>{
             })
             .catch((err)=>setError(err.message))
             .finally(()=>setLoading(false));
-    },[]);
+    },[]);*/
+    // POLLING (PVP)
+    useEffect(()=>{
+        if(mode !== "pvp"){
+            return;
+        }
+        const interval = setInterval(()=>{loadBoard();},pollInterval);
+        return ()=> clearInterval(interval);
+    },[mode,loadBoard,pollInterval]);
     // hàm xử lý kết quả trả về từ server khi gửi move 
     const applyMoveResult = useCallback((result)=>{
         // load bảng nếu tìm thấy bảng
@@ -112,7 +142,7 @@ const useBoard = () =>{
             // đúng 
             try {
                 // gửi quân phong và tọa độ đi
-                const result = await sendMove(from,to,promotionPiece);
+                const result = await sendMove(from,to,promotionPiece,roomCode);
                 applyMoveResult(result); 
             }
             // sai
@@ -122,8 +152,8 @@ const useBoard = () =>{
                 setMoveStatus(null);
             }
         },
-        [pendingPromotion,applyMoveResult]
-    )
+        [pendingPromotion,applyMoveResult,roomCode]
+    );
     // lưu một function click để re-render
     const handleCellClick = useCallback(
         async (row , col)=>{
@@ -132,6 +162,10 @@ const useBoard = () =>{
             // quy trình cụ thể là khi chưa chọn -> chọn ô -> + bỏ chọn ô đó hoặc chọn ô khác
             // nếu là move status thì trả về (đang chờ ai suy nghĩ) không cho nhấn chuột
             if (moveStatus ==="thinking"||gameStatus.state === "checkmate"||gameStatus.state ==="stalemate"){
+                return;
+            }
+            // chặn lượt pvp
+            if (!isMyTurn){
                 return;
             }
             // vị trị quân cờ hiện tại
@@ -186,7 +220,7 @@ const useBoard = () =>{
             }
             setMoveStatus("thinking");
             try{
-                const result = await sendMove(from,to);
+                const result = await sendMove(from,to,null,roomCode);
                 applyMoveResult(result);
                 /*// Cập nhật bàn cờ dù hợp lệ hay không
                 if (result.board){
@@ -215,7 +249,7 @@ const useBoard = () =>{
                 setMoveStatus(null);
             }
         },
-        [board, selected, turn, moveStatus,gameStatus,pendingPromotion,applyMoveResult]
+        [board, selected, turn, moveStatus,gameStatus,pendingPromotion,isMyTurn,roomCode,applyMoveResult]
     );
     // reset game
     const resetGame = useCallback(async()=>{
@@ -233,11 +267,11 @@ const useBoard = () =>{
         catch(err){
             setError(err.message);
         }
-    },[]);
+    },[roomCode]);
     //Helper: ô có nằm trong danh sách hợp lệ không
     const isLegalTarget = useCallback(
          (row, col) => legalMoves.some((m) => m.row === row && m.col === col),[legalMoves]
     )
-    return {board,loading,error,selected,legalMoves,isLegalTarget,turn,moveStatus,gameStatus,handleCellClick,resetGame,pendingPromotion,handlePromotionSelect};
+    return {board,loading,error,selected,legalMoves,isLegalTarget,turn,moveStatus,gameStatus,handleCellClick,resetGame,pendingPromotion,handlePromotionSelect,isMyTurn};
 };
 export default useBoard;
