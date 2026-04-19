@@ -8,16 +8,17 @@ const getHeaders = () =>({
 const request = async(url, options = {}) => {
   try{
     const res = await fetch(url, {
-      headers: getHeaders(),
       ...options,
-      headers:{
+      headers: {
         ...getHeaders(),
-        ...(options.headers||{})  
+        ...(options.headers || {})
       }
     });
     const data = await res.json();
     if(!res.ok){
-      throw new Error(data.message || "API Error");
+      throw new Error(
+        data.message || data.error || JSON.stringify(data) || "API Error"
+      );
       
     }
     return data;
@@ -47,9 +48,13 @@ export const joinRoom = async (code, password = null) => {
   if(!code){
     return { success: false, message: "Thiếu mã phòng" };
   }
+  const body = {code};
+  if (password){
+    body.password = password;
+  }
   return request(`${BASE_URL}/join`,{
     method:"POST",
-    body: JSON.stringify({ code, password })
+    body: JSON.stringify(body)
   })
 };
 export const leaveRoom = async (roomId) => {

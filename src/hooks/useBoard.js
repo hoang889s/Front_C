@@ -4,6 +4,7 @@ import {fetchBoard, sendMove, fetchLegalMoves, resetGame as apiResetGame } from 
 const WHITE_PIECES = new Set(["P","N","B","R","Q","K"]);
 // Quân đen : p n b r q k
 const BLACK_PIECES = new Set(["p","n","b","r","q","k"]);
+const DEFAULT_GAME_STATUS = { state: "ongoing" };
 const pieceColor = (piece)=>{
     if (WHITE_PIECES.has(piece)){
         return "white";
@@ -56,10 +57,11 @@ const useBoard = ({mode = "pva",roomCode=null,myColor=null,pollInterval = 2000}=
     const loadBoard= useCallback(async()=>{
         try{
             const data = await fetchBoard(roomCode);
+            console.log("Board API:", data); 
             if(data.board){
                 setBoard(data.board);
                 setTurn(data.turn);
-                setGameStatus(data.game_status);
+                setGameStatus(data.game_status ?? DEFAULT_GAME_STATUS);
             }
 
         }
@@ -103,25 +105,19 @@ const useBoard = ({mode = "pva",roomCode=null,myColor=null,pollInterval = 2000}=
     },[mode,loadBoard,pollInterval]);
     // hàm xử lý kết quả trả về từ server khi gửi move 
     const applyMoveResult = useCallback((result)=>{
-        // load bảng nếu tìm thấy bảng
-        if(result.board) {
-            setBoard(result.board);
-        }
-        // nếu không hợp lệ sau 1500 ms thì sẽ null
-        if (result.status === "invalid"){
-            setMoveStatus("invalid")
-            setTimeout(()=>setMoveStatus(null),1500);
+        if(!result){
             return;
         }
-        // nếu thấy lượt trắng thì hãy xét lượt trắng
-        if (result.turn){
-            setTurn(result.turn);
+        if(result.board){
+            setBoard(result.board);
         }
-        // trả về trạng thái game thắng thua hòa
-        if(result.game_status){
-            setGameStatus(result.game_status);
-
+        if (result.status === "invalid") {
+            setMoveStatus("invalid");
+            setTimeout(() => setMoveStatus(null), 1500);
+            return;
         }
+        setTurn(result.turn ?? "white");
+        setGameStatus(result.game_status ?? DEFAULT_GAME_STATUS);
         // nếu tất cả không thì di chuyển là null
         setMoveStatus(null);
     },[])
