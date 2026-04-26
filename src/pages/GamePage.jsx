@@ -1,80 +1,93 @@
-
-import Board from "../components/Board";
-import LoadingSpinner from "../components/LoadingSpinner";
-import StatusBar from "../components/StatusBar";
-import useBoard from "../hooks/useBoard";
+import { useCallback, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useGame } from "../hooks/useGame";
+//import { useAuthLogic } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
+// Components
+import Board from "../components/Game/Board";
+import MoveHistory from "../components/Game/MoveHistory";
+import GameStatus from "../components/Game/GameStatus";
+import Loading from "../components/Common/Loading";
 const GamePage = () =>{
+    const { gameId } = useParams();
+    const navigate = useNavigate();
+    const { token } = useAuth();
     const {
-        board,
-        loading,
-        error,
-        selected,
-        turn,
-        moveStatus,
-        gameStatus,
-        isLegalTarget,
-        handleCellClick,
-        resetGame,
-    } = useBoard();
-    // loading bàn cờ chờ server trả lời
-    if(loading){
-        return <LoadingSpinner message="Đang tải bàn cờ..." />;
+        gameState,
+        connected,
+        joinGame,
+        makeMove,
+        leaveGame,  
+    } = useGame(token);
+    // join game khi vào page
+    useEffect(() => {
+        if (!gameId) {
+            console.warn("[GAME_PAGE] No gameId in URL");
+            return;
+        }
+        if (!connected) {
+            console.log("[GAME_PAGE] Waiting for socket connection...");
+            return;
+        }
+        joinGame(gameId);
+        return () =>{
+            leaveGame();
+        }
+
+    },[gameId,connected]);
+    // chưa connect
+    if (!connected) {
+        return <Loading />;
     }
-    // nhả lỗi khi có lỗi
-    if(error){
-        return <div style={{ color: "red", padding: 20 }}>Lỗi: {error}</div>;
+    // chưa có game
+    if (!gameState.gameId) {
+        return <Loading />;
     }
+    const handleMove = (move) => {
+        makeMove(move);
+    };
+    const handleLeave = () => {
+        leaveGame();
+        navigate("/");
+    };
+    console.log("RENDER GAME PAGE");
+    console.log("gameState:", gameState);
+    console.log("connected:", connected);
+    console.log("GamePage render");
     return (
-        <div style={{padding: "30px", fontFamily: "sans-serif"}}>
-            <h2 style={{ marginBottom: "16px" }}>Chơi với Máy</h2>
-            {/*hiện thị trạng thái thắng thua hòa*/}
-            {gameStatus.state === "checkmate" && (
-                <div style={bannerStyle("red")}>
-                    Chiếu hết! {gameStatus.loser === "white" ? "Trắng" : "Đen"} thua!
+        <div className="game-page">
+            <div className="game-container">
+                {/* LEFT: BOARD */}
+                <div className="game-board">
+                    <Board
+                        board={gameState.board}
+                        currentTurn={gameState.currentTurn}
+                        status={gameState.status}
+                        onMove={handleMove}
+                    />
+                    
                 </div>
-            )}
-            {gameStatus.state === "stalemate"&&(
-                <div style={bannerStyle("gray")}>
-                    Hòa cờ! (Stalemate)
+                {/* RIGHT: INFO PANEL */}
+                <div className="game-sidebar">
+                    <GameStatus
+                        status={gameState.status}
+                        currentTurn={gameState.currentTurn}
+                        players={gameState.players}
+                        winner={gameState.winner}
+                    />
+                    <MoveHistory moves={gameState.moves || []} />
+                    <button
+                        className="leave-btn"
+                        onClick={handleLeave}
+                    >
+                        Thoát Game
+                    </button>
                 </div>
-            )}
-            {gameStatus.state === "check" && (
-                <div style={bannerStyle("orange")}>
-                    Chiếu! Vua {gameStatus.color === "white" ? "Trắng" : "Đen"} đang bị chiếu!
-                </div>
-            )}
-            <Board
-                board={board}
-                selected={selected}
-                isLegalTarget={isLegalTarget}
-                onCellClick={handleCellClick}
-            />
-            <StatusBar turn={turn} moveStatus={moveStatus} />
-            <p style={{ marginTop: "10px", color: "#888", fontSize: "13px" }}>
-                Click quân cờ để chọn, click ô đích để di chuyển.
-            </p>
-            <button onClick={resetGame} style={resetBtnStyle}>
-                Chơi lại
-            </button>
+
+            </div>
+
+
         </div>
-    );
-};
-const bannerStyle = (color)=>({
-    marginBottom: "12px",
-    padding: "10px 16px",
-    backgroundColor: color,
-    color: "white",
-    borderRadius: "6px",
-    fontWeight: "bold",
-    fontSize: "15px",
-})
-const resetBtnStyle ={
-    marginTop: "16px",
-    padding: "8px 20px",
-    fontSize: "14px",
-    cursor: "pointer",
-    borderRadius: "6px",
-    border: "1px solid #ccc",
-    backgroundColor: "#f5f5f5",
+    )
 }
 export default GamePage;

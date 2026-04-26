@@ -1,0 +1,77 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 60px);
+  grid-template-rows: repeat(8, 60px);
+  border: 2px solid #333;
+}
+
+.square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.light {
+  background-color: #f0d9b5;
+}
+
+.dark {
+  background-color: #b58863;
+}
+
+.selected {
+  outline: 3px solid yellow;
+}
+
+.board-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.status {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+.piece {
+    font-size: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.piece.white {
+    color: #fff;
+}
+
+.piece.black {
+    color: #000;
+}
+.move-history {
+    padding: 10px;
+}
+
+.move-list {
+    list-style: none;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.move-item {
+    display: flex;
+    gap: 10px;
+    padding: 4px 0;
+}
+
+.move-index {
+    font-weight: bold;
+    width: 30px;
+}
+
+.move-text {
+    font-family: monospace;
+}
