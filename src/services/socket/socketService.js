@@ -2,6 +2,7 @@ import { io } from "socket.io-client";
 let socket = null;
 const SOCKET_URL = "http://localhost:8000";
 const listeners = {};
+
 export const socketService = {
     connect(token) {
         if (socket){
@@ -11,7 +12,7 @@ export const socketService = {
         console.log("[Socket] Creating new connection...");
         socket = io(SOCKET_URL, {
             transports: ["websocket"],
-            query: { token },
+            auth: { token },
             reconnection: true,
             reconnectionAttempts: 5,
             reconnectionDelay: 1000,

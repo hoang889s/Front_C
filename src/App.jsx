@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import GamePage from "./pages/GamePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import RoomCreate from "./components/Room/RoomCreate";
 
 // Components
 import Navbar from "./components/Common/Navbar";
@@ -29,6 +30,13 @@ const App = () => {
             element={
                 <AuthGuard><HomePage/></AuthGuard>
             }
+        />
+        <Route
+            path="/create-room"
+             element={
+              <AuthGuard><RoomCreate/></AuthGuard>
+             }
+        
         />
 
         <Route

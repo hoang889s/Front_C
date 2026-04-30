@@ -5,15 +5,17 @@ export const useGame = (token) => {
   const [gameState, setGameState] = useState({
     gameId: null,
     board: [],
-    currentTurn: null,
+    turn: null,
     status: "waiting",
-    players: [],
-    winner: null,
-    moves: [],
+    white:null,
+    black:null,
+    fen:null,
+    lastMove:null,
+    checkmate:false,
   });
   const [connected, setConnected] = useState(false);
 
-  
+  // connect sockets
   useEffect(() => {
     if (!token) {
       console.log("[useGame] No token");
@@ -21,38 +23,29 @@ export const useGame = (token) => {
       return;
     }
 
-    console.log("[useGame] Connecting socket with token");
     const socket = socketService.connect(token);
-
-    if (socket.connected) {
-      console.log("[useGame] Socket already connected!");
+    if(socket.connected){
       setConnected(true);
     }
-
-    const handleConnect = () => {
-      console.log("[useGame] Socket connected!");
+    const handleConnect = () =>{
       setConnected(true);
     };
-
-    const handleConnectError = (error) => {
-      console.error("[useGame] Socket error:", error);
+    const handleError = () =>{
       setConnected(false);
     };
-
     socket.on("connect", handleConnect);
-    socket.on("connect_error", handleConnectError);
-
-    return () => {
-      socket.off("connect", handleConnect);
-      socket.off("connect_error", handleConnectError);
-    };
+    socket.on("connect_error", handleError);
+    return () =>{
+      socket.off("connect",handleConnect);
+      socket.off("connect_error", handleError);
+    }
   }, [token]);
 
   
   useEffect(() => {
     const socket = socketService.getSocket();
 
-    if (!socket || !socket.connected) {
+    if (!socket?.connected) {
       console.log("[useGame] Socket not ready for listeners");
       return;
     }
@@ -67,6 +60,7 @@ export const useGame = (token) => {
                 ...data,
             }));
         };*/
+    // game state
     const handleGameState = (data) => {
       console.log("[Socket Event] game_state:", data);
 
@@ -74,11 +68,11 @@ export const useGame = (token) => {
         ...prev,
         gameId: data.gameId,
         board: data.board,
-        currentTurn: data.currentTurn,
-        status: data.status,
-        players: data.players,
-        winner: data.winner,
-        moves: data.moves || [],
+        turn:data.turn,
+        status:data.status,
+        white:data.white,
+        black:data.black,
+        fen:data.fen,
       }));
     };
 
@@ -88,81 +82,58 @@ export const useGame = (token) => {
       setGameState((prev) => ({
         ...prev,
         board: data.board,
-        currentTurn: data.currentTurn,
-        moves: [...(prev.moves || []), data],
+        turn:data.turn,
+        fen:data.fen,
+        lastMove:data.move,
+        check:data.check,
+        checkmate:data.checkmate,
       }));
     };
-
-    // Game start
-    const handleGameStart = (data) => {
-      console.log("[Socket Event] game_start:", data);
+    // Ai move
+    const handleAIMove = (data)=>{
       setGameState((prev) => ({
         ...prev,
-        status: "playing",
-        ...data,
+        board: data.board,
+        turn: data.turn,
+        fen: data.fen,
+        lastMove: data.move,
       }));
     };
-
-    // Game end
-    const handleGameEnd = (data) => {
-      console.log("[Socket Event] game_end:", data);
-      setGameState((prev) => ({
-        ...prev,
-        status: "finished",
-        winner: data.winner,
-      }));
-    };
-
-    // Game error
-    const handleGameError = (error) => {
-      console.error("[Socket Event] game_error:", error);
-    };
+    const handleError = (err)=>{
+      console.error("[GAME ERROR]", err);
+    }
 
     // Attach listeners
     socketService.on("game_state", handleGameState);
     socketService.on("move", handleMove);
-    socketService.on("game_start", handleGameStart);
-    socketService.on("game_end", handleGameEnd);
-    socketService.on("game_error", handleGameError);
+    socketService.on("ai_move",handleAIMove);
+    socketService.on("game_error", handleError);
 
     // Cleanup: Remove listeners when component unmounts or socket disconnects
     return () => {
-      console.log("[useGame] Cleaning up listeners");
       socketService.off("game_state", handleGameState);
       socketService.off("move", handleMove);
-      socketService.off("game_start", handleGameStart);
-      socketService.off("game_end", handleGameEnd);
-      socketService.off("game_error", handleGameError);
+      socketService.off("ai_move", handleAIMove);
+      socketService.off("game_error", handleError);
     };
   }, [connected]); // Dependency: chỉ khi connected status thay đổi
 
   // Game actions
   const joinGame = useCallback((gameId) => {
-    if (!gameId) {
-      console.error("[useGame] joinGame: gameId is required");
-      return;
-    }
-
     const socket = socketService.getSocket();
-    if (!socket?.connected) {
-      console.error("[useGame] joinGame: Socket not connected");
+    if(!socket?.connected){
       return;
     }
-
-    console.log("[useGame] Joining game:", gameId);
-    // ✅ Backend expects: { gameId }
-    socketService.emit("join_game", { gameId });
+    socketService.emit("join_game",{gameId});
   }, []);
 
   const makeMove = useCallback(
     (move) => {
       const socket = socketService.getSocket();
       if (!socket?.connected) {
-        console.error("[useGame] makeMove: Socket not connected");
         return;
       }
 
-      console.log("[useGame] Making move:", move);
       
       socketService.emit("move", {
         game_id: gameState.gameId,
@@ -171,26 +142,39 @@ export const useGame = (token) => {
     },
     [gameState.gameId]
   );
+  const aiMove = useCallback(()=>{
+    const socket = socketService.getSocket()
+    if (!socket?.connected){
+      return;
+    }
+    socketService.emit("ai_move",{
+      game_id: gameState.gameId,
+    });
+  },[gameState.gameId]);
 
-  const leaveGame = useCallback(() => {
+
+  const leaveGame = useCallback((gameId) => {
     const socket = socketService.getSocket();
     if (!socket?.connected) {
-      console.warn("[useGame] leaveGame: Socket not connected");
       return;
     }
 
-    console.log("[useGame] Leaving game");
-    socketService.emit("leave_game");
+    socketService.emit("leave_game",{
+      game_id:gameId,
+    });
 
     // Reset state
     setGameState({
       gameId: null,
       board: [],
-      currentTurn: null,
-      status: "waiting",
-      players: [],
-      winner: null,
-      moves: [],
+      turn: null,
+      status:"waiting",
+      white:null,
+      black:null,
+      fen:null,
+      lastMove:null,
+      check:false,
+      checkmate:false,
     });
   }, []);
 
@@ -199,6 +183,7 @@ export const useGame = (token) => {
     connected,
     joinGame,
     makeMove,
+    aiMove,
     leaveGame,
   };
 };

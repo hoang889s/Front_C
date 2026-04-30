@@ -1,5 +1,7 @@
 import "../../styles/theme.css";
-const GameStatus = ({ status, currentTurn, players = [], winner }) => {
+const GameStatus = ({ status, currentTurn, players, winner }) => {
+    // Normalize players về array
+    const safePlayers = Array.isArray(players) ? players :players?Object.values(players):[];
     const renderStatus = () => {
         switch (status) {
             case "waiting":
@@ -26,9 +28,11 @@ const GameStatus = ({ status, currentTurn, players = [], winner }) => {
         if (status !== "finished" || !winner){
             return null;
         }
-        <div className="winner">
-            Người thắng: <strong>{winner}</strong>
-        </div>
+        return(
+            <div className="winner">
+                Người thắng: <strong>{winner}</strong>
+            </div>
+        );
     };
     return(
         <div className="game-status">
@@ -38,13 +42,13 @@ const GameStatus = ({ status, currentTurn, players = [], winner }) => {
             {renderWinner()}
             <div className="players">
                 <h4>Người chơi</h4>
-                {players.length === 0 ? (
+                {safePlayers.length === 0 ? (
                     <p>Chưa có người chơi</p>
                 ):(
                     <ul>
-                        {players.map((p, index) => (
+                        {safePlayers.map((p, index) => (
                             <li key={index}>
-                                {p.username || p} {/* linh hoạt dữ liệu */}
+                                {p?.username || p} {/* linh hoạt dữ liệu */}
                             </li>
                         ))}
                     </ul>

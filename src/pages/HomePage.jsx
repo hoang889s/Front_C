@@ -3,7 +3,7 @@ const HomePage = () =>{
     return(
         <div>
             <h1>Trang chủ</h1>
-            <Link to="/game/1">Chơi game</Link>
+            <Link to="create-room">Tạo phòng và chơi</Link>
         </div>
     );
 }

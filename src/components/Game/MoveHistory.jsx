@@ -1,6 +1,8 @@
 import React from "react";
 import "../../styles/board.css";
+import { normallizeMove } from "../../utils/convertMove";
 const MoveHistory =({moves})=>{
+    console.log("từ file MoveHistory.jsx",moves);
     if (!moves||moves.length === 0){
         return(
             <div className="move-history">
@@ -17,14 +19,15 @@ const MoveHistory =({moves})=>{
                 {moves.map((move,index)=>{
                     //nếu backend trả string: "e2e4"
                     //hoặc object: { from: "e2", to: "e4", piece: "pawn" }
-                    const displayMove = typeof move === "string"?move:`${move.from} → ${move.to}`;
+                    const normalized = normallizeMove(move);
+                    console.log("normalized row:", normalized.from, normalized.to);
                     return (
                         <li key={index} className="move-item">
                             <span className="move-index">
                                 {Math.floor(index / 2) + 1}.
                             </span>
                             <span className="move-text">
-                                {displayMove}
+                                {normalized.from} → {normalized.to}
                             </span>
 
                         </li>

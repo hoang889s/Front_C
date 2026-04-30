@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect , useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGame } from "../hooks/useGame";
 //import { useAuthLogic } from "../hooks/useAuth";
@@ -19,19 +19,26 @@ const GamePage = () =>{
         makeMove,
         leaveGame,  
     } = useGame(token);
+    const joinedGameIdRef = useRef(null);
     // join game khi vào page
     useEffect(() => {
-        if (!gameId) {
+        if (!gameId|| !connected) {
             console.warn("[GAME_PAGE] No gameId in URL");
             return;
         }
-        if (!connected) {
-            console.log("[GAME_PAGE] Waiting for socket connection...");
+        const id = parseInt(gameId);
+        if (joinedGameIdRef.current === id){
             return;
         }
-        joinGame(gameId);
+        console.log("[JOIN]", id);
+        joinGame(id);
+        joinedGameIdRef.current = id;
         return () =>{
-            leaveGame();
+            if (joinedGameIdRef.current === id) {
+                console.log("[GAME_PAGE] Leaving game:", id);
+                leaveGame(id);
+                joinedGameIdRef.current = null;
+            }
         }
 
     },[gameId,connected]);
@@ -40,14 +47,16 @@ const GamePage = () =>{
         return <Loading />;
     }
     // chưa có game
-    if (!gameState.gameId) {
+    if (!gameState?.gameId) {
         return <Loading />;
     }
     const handleMove = (move) => {
         makeMove(move);
     };
     const handleLeave = () => {
-        leaveGame();
+        if(gameId){
+        leaveGame(parseInt(gameId));
+        }
         navigate("/");
     };
     console.log("RENDER GAME PAGE");
@@ -61,7 +70,7 @@ const GamePage = () =>{
                 <div className="game-board">
                     <Board
                         board={gameState.board}
-                        currentTurn={gameState.currentTurn}
+                        currentTurn={gameState.turn}
                         status={gameState.status}
                         onMove={handleMove}
                     />
@@ -71,8 +80,11 @@ const GamePage = () =>{
                 <div className="game-sidebar">
                     <GameStatus
                         status={gameState.status}
-                        currentTurn={gameState.currentTurn}
-                        players={gameState.players}
+                        currentTurn={gameState.turn}
+                        players={{
+                            white:gameState.white,
+                            black:gameState.black,
+                        }}
                         winner={gameState.winner}
                     />
                     <MoveHistory moves={gameState.moves || []} />
