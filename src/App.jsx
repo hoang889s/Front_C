@@ -10,7 +10,7 @@ import RoomCreate from "./components/Room/RoomCreate";
 // Components
 import Navbar from "./components/Common/Navbar";
 import AuthGuard from "./components/Auth/AuthGuard";
-
+import RoomJoin from "./components/Room/RoomJoin";
 
 import { AuthProvider } from "./context/AuthContext";
 
@@ -37,6 +37,12 @@ const App = () => {
               <AuthGuard><RoomCreate/></AuthGuard>
              }
         
+        />
+        <Route
+          path="/join-room"
+          element={
+            <AuthGuard><RoomJoin/></AuthGuard>
+          }
         />
 
         <Route

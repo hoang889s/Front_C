@@ -78,6 +78,16 @@ const GamePage = () =>{
                 </div>
                 {/* RIGHT: INFO PANEL */}
                 <div className="game-sidebar">
+                    {gameState.roomCode && (
+                        <div className="room-box">
+                            <p>Room Code:</p>
+                            <h3>{gameState.roomCode}</h3>
+                            <button
+                                onClick={() => navigator.clipboard.writeText(gameState.roomCode)}
+                            >Copy
+                            </button>
+                        </div>
+                    )}
                     <GameStatus
                         status={gameState.status}
                         currentTurn={gameState.turn}

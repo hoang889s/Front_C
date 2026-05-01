@@ -4,6 +4,7 @@ import { socketService } from "../services/socket/socketService";
 export const useGame = (token) => {
   const [gameState, setGameState] = useState({
     gameId: null,
+    roomCode:null,
     board: [],
     turn: null,
     status: "waiting",
@@ -63,17 +64,23 @@ export const useGame = (token) => {
     // game state
     const handleGameState = (data) => {
       console.log("[Socket Event] game_state:", data);
+      console.log("ROOM CODE FROM SERVER:", data.room_code);
 
-      setGameState((prev) => ({
-        ...prev,
-        gameId: data.gameId,
-        board: data.board,
-        turn:data.turn,
-        status:data.status,
-        white:data.white,
-        black:data.black,
-        fen:data.fen,
-      }));
+
+      setGameState({
+        gameId: data.gameId ?? data.game_id ?? null,
+        roomCode: data.room_code ?? data.roomCode ?? null,
+        board: data.board ?? [],
+        turn: data.turn ?? null,
+        status: data.status ?? "waiting",
+        white: data.white ?? null,
+        black: data.black ?? null,
+        fen: data.fen ?? null,
+        lastMove: null,
+        check: false,
+        checkmate: false,
+      });
+      
     };
 
     // Move update
@@ -87,6 +94,7 @@ export const useGame = (token) => {
         lastMove:data.move,
         check:data.check,
         checkmate:data.checkmate,
+        status: data.status ?? prev.status,
       }));
     };
     // Ai move
@@ -125,7 +133,7 @@ export const useGame = (token) => {
       return;
     }
     socketService.emit("join_game",{gameId});
-  }, []);
+  }, [connected]);
 
   const makeMove = useCallback(
     (move) => {
@@ -166,6 +174,7 @@ export const useGame = (token) => {
     // Reset state
     setGameState({
       gameId: null,
+      roomCode:null,
       board: [],
       turn: null,
       status:"waiting",
