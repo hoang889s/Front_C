@@ -2,6 +2,7 @@ import { io } from "socket.io-client";
 let socket = null;
 const SOCKET_URL = "http://localhost:8000";
 const listeners = {};
+let gameStateCache = null;
 
 export const socketService = {
     connect(token) {
@@ -27,7 +28,20 @@ export const socketService = {
         socket.on("connect_error", (err) => {
              console.error("[Socket] Error:", err.message);
         });
+        socket.on("game_state", (data) => {
+            console.log("[Socket] Caching game_state:", data);
+            gameStateCache = data;
+        });
+
         return socket;
+    },
+    getGameStateCache() {
+        console.log("[Socket] Returning cached game_state:", gameStateCache);
+        return gameStateCache;
+    },
+    clearGameStateCache() {
+        console.log("[Socket] Cleared game_state cache");
+        gameStateCache = null;
     },
     disconnect() {
         if (socket) {
@@ -38,6 +52,7 @@ export const socketService = {
             });
             socket.disconnect();
             socket =null;
+            gameStateCache = null;
             console.log("[Socket] Disconnected");
         }
 

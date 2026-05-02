@@ -41,7 +41,7 @@ const GamePage = () =>{
             }
         }
 
-    },[gameId,connected]);
+    },[gameId,connected,joinGame, leaveGame]);
     // chưa connect
     if (!connected) {
         return <Loading />;

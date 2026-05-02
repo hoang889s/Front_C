@@ -2,18 +2,41 @@ import { useEffect, useState, useCallback } from "react";
 import { socketService } from "../services/socket/socketService";
 
 export const useGame = (token) => {
-  const [gameState, setGameState] = useState({
-    gameId: null,
-    roomCode:null,
-    board: [],
-    turn: null,
-    status: "waiting",
-    white:null,
-    black:null,
-    fen:null,
-    lastMove:null,
-    checkmate:false,
+  const [gameState, setGameState] = useState(() => {
+    const cached = socketService.getGameStateCache();
+    if (cached) {
+      console.log("[useGame] Initializing from cache:", cached);
+      return{
+        gameId: cached.gameId ?? cached.game_id ?? null,
+        roomCode: cached.room_code ?? cached.roomCode ?? null,
+        board: cached.board ?? [],
+        turn: cached.turn ?? null,
+        status: cached.status ?? "waiting",
+        white: cached.white ?? null,
+        black: cached.black ?? null,
+        fen: cached.fen ?? null,
+        lastMove: null,
+        check: false,
+        checkmate: false,
+      };
+
+    }
+    return {
+      gameId: null,
+      roomCode: null,
+      board: [],
+      turn: null,
+      status: "waiting",
+      white: null,
+      black: null,
+      fen: null,
+      lastMove: null,
+      check: false,
+      checkmate: false,
+    };
   });
+  
+  
   const [connected, setConnected] = useState(false);
 
   // connect sockets
@@ -172,6 +195,7 @@ export const useGame = (token) => {
     });
 
     // Reset state
+    socketService.clearGameStateCache();
     setGameState({
       gameId: null,
       roomCode:null,
