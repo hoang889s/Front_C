@@ -1,4 +1,5 @@
 import { io } from "socket.io-client";
+import { removeItem } from "../storage/localStorage";
 let socket = null;
 const SOCKET_URL = "http://localhost:8000";
 const listeners = {};
@@ -24,9 +25,30 @@ export const socketService = {
         });
         socket.on("disconnect", (reason) => {
             console.log("[Socket] Disconnected:", reason);
+            //Nếu disconnect vì token hết hạn, xóa token
+            if(reason=== "io server disconnect" || reason === "auth error"){
+                console.warn("[Socket] Auth error, clearing token");
+                removeItem("token");
+                removeItem("user");
+            }
+
         });
         socket.on("connect_error", (err) => {
-             console.error("[Socket] Error:", err.message);
+            console.error("[Socket] Error:", err.message);
+            // Nếu lỗi auth, xóa token
+            if (err.message.includes("401") || err.message.includes("Unauthorized")) {
+                console.warn("[Socket] Auth error, clearing token");
+                removeItem("token");
+                removeItem("user");
+
+            }
+        });
+        socket.on("logout_success",(data)=>{
+            console.log("[Socket] Logout success:", data);
+            removeItem("token");
+            removeItem("user");
+            this.disconnect();
+            window.location.href = "/login";
         });
         socket.on("game_state", (data) => {
             console.log("[Socket] Caching game_state:", data);
@@ -45,6 +67,8 @@ export const socketService = {
     },
     disconnect() {
         if (socket) {
+            console.log("[Socket] Disconnecting...");
+            // Xóa tất cả listenner
             Object.keys(listeners).forEach((event)=>{
                 listeners[event].forEach((callback)=>{
                     socket.off(event,callback);

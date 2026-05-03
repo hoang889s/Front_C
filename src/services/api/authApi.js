@@ -45,3 +45,19 @@ export const getMeApi = async () => {
         );
     }
 };
+// LOGOUT 
+export const logoutApi = async () =>{
+    try{
+        console.log("[LOGOUT API] Calling logout endpoint");
+        const res = await http.post("/game/logout");
+        console.log("[LOGOUT API] Response:", res.data);
+        return res.data;
+    }
+    catch (err){
+        console.error("[LOGOUT API] Error:", error.response?.data);
+        return{
+            status: "error",
+            message: error.response?.data?.error || "Logout failed"
+        };
+    }
+};

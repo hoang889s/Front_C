@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getItem } from "../storage/localStorage";
+import { getItem,removeItem } from "../storage/localStorage";
 
 const http = axios.create({
     baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api",
@@ -24,10 +24,13 @@ http.interceptors.request.use((config) => {
 http.interceptors.response.use(
     (response) => response,
     (error) => {
-        console.error("[HTTP ERROR]", error.response?.data || error.message);
+        console.error("[HTTP ERROR]", error.response?.status, error.response?.data || error.message);
 
         if (error.response?.status === 401) {
             console.warn("Unauthorized - token invalid/expired");
+            removeItem("token");
+            removeItem("user");
+            window.location.href = "/login";
         }
 
         return Promise.reject(error);
