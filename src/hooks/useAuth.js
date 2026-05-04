@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { loginApi, registerApi,logoutApi } from "../services/api/authApi";
-import { getItem, setItem, removeItem } from "../services/storage/localStorage";
+import { getItem, setItem, removeItem,clearStorage } from "../services/storage/localStorage";
 
 const TOKEN_KEY = "token";
 const USER_KEY = "user";

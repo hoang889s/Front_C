@@ -13,8 +13,8 @@ const Navbar = () => {
       window.location.href = "/login";
     }
     catch (error){
-      console.error("[UI] Logout error:", err);
-      alert("Logout failed: " + err.message);
+      console.error("[UI] Logout error:", error);
+      alert("Logout failed: " + error.message);
     }
   };
   return (
