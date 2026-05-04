@@ -42,6 +42,10 @@ const GamePage = () =>{
         }
 
     },[gameId,connected,joinGame, leaveGame]);
+    console.log("=== GAME PAGE RENDER ===");
+    console.log("gameState:", gameState);
+    console.log("gameState.status:", gameState.status);
+    console.log("connected:", connected);
     // chưa connect
     if (!connected) {
         return <Loading />;
@@ -52,6 +56,7 @@ const GamePage = () =>{
     }
     const handleMove = (move) => {
         makeMove(move);
+        
     };
     const handleLeave = () => {
         if(gameId){

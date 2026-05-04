@@ -88,7 +88,7 @@ export const useGame = (token) => {
     const handleGameState = (data) => {
       console.log("[Socket Event] game_state:", data);
       console.log("ROOM CODE FROM SERVER:", data.room_code);
-
+      console.log("ROOM CODE STATUS FROM SERVER:", data.status);
 
       setGameState({
         gameId: data.gameId ?? data.game_id ?? null,
@@ -109,6 +109,16 @@ export const useGame = (token) => {
     // Move update
     const handleMove = (data) => {
       console.log("[Socket Event] move:", data);
+  
+      console.log("📋 OLD board:");
+      console.log("  - Row 6 (rank 2):", gameState.board[6]);
+  
+      console.log("📋 NEW board:");
+      console.log("  - Row 6 (rank 2):", data.board[6]);
+  
+      console.log("📊 FEN:");
+      console.log("  - OLD:", gameState.fen);
+      console.log("  - NEW:", data.fen);
       setGameState((prev) => ({
         ...prev,
         board: data.board,
@@ -119,6 +129,7 @@ export const useGame = (token) => {
         checkmate:data.checkmate,
         status: data.status ?? prev.status,
       }));
+      console.log("[Socket Event] gameState updated");
     };
     // Ai move
     const handleAIMove = (data)=>{
@@ -161,7 +172,10 @@ export const useGame = (token) => {
   const makeMove = useCallback(
     (move) => {
       const socket = socketService.getSocket();
+      console.log("[makeMove] Socket connected?", socket?.connected);
+      console.log("[makeMove] Emitting move:", move);
       if (!socket?.connected) {
+        console.log("[makeMove] ❌ Socket not connected!");
         return;
       }
 
@@ -170,6 +184,7 @@ export const useGame = (token) => {
         game_id: gameState.gameId,
         move: move,
       });
+      console.log("[makeMove] ✅ Move emitted");
     },
     [gameState.gameId]
   );

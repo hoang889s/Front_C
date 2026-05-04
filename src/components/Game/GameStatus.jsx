@@ -6,7 +6,7 @@ const GameStatus = ({ status, currentTurn, players, winner }) => {
         switch (status) {
             case "waiting":
                 return "Đang chờ người chơi...";
-            case "playing":
+            case "ongoing":
                 return " Đang chơi";
             case "finished":
                 return " Kết thúc";

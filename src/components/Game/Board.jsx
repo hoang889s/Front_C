@@ -4,7 +4,10 @@ import "../../styles/board.css";
 
 const Board = ({ board, currentTurn, status, onMove }) => {
   const [selected, setSelected] = useState(null);
-
+  console.log("🔵 Board component received:");
+  console.log("  - status:", status);
+  console.log("  - currentTurn:", currentTurn);
+  console.log("  - board length:", board?.length);
   /*const handleClick = (row, col) => {
         if (status !== "playing") return;
 
@@ -26,10 +29,11 @@ const Board = ({ board, currentTurn, status, onMove }) => {
         setSelected(null);
     };*/
   const handleClick = (row, col) => {
-    console.log("CLICK:", row, col);
-    console.log("STATUS:", status);
+    console.log("CLICK at:", row, col);
+    console.log("Current status value:", status);
+    console.log("status !== 'playing'?", status !== "playing");
 
-    if (status !== "playing") {
+    if (status !== "ongoing") {
       console.log("NOT PLAYING");
       return;
     }
