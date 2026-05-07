@@ -8,33 +8,18 @@ const Board = ({ board, currentTurn, status, onMove }) => {
   console.log("  - status:", status);
   console.log("  - currentTurn:", currentTurn);
   console.log("  - board length:", board?.length);
-  /*const handleClick = (row, col) => {
-        if (status !== "playing") return;
 
-        if (!selected) {
-            console.log("SELECTING");
-            if (!board[row][col]||board[row][col] === "."){
-                return;
-            }
-            setSelected({ row, col });
-            return;
-        }
-
-        const move = {
-            from: selected,
-            to: { row, col },
-        };
-        console.log("di chuyển")
-        onMove(move);
-        setSelected(null);
-    };*/
   const handleClick = (row, col) => {
     console.log("CLICK at:", row, col);
     console.log("Current status value:", status);
-    console.log("status !== 'playing'?", status !== "playing");
+    console.log("status !== 'ongoing'?", status !== "ongoing");
 
+    // ✅ FIX: Match backend status values
+    // Backend: "ongoing", "win", "loss", "draw"
+    // ❌ OLD: Checked for "playing"
+    // ✅ NEW: Check for "ongoing"
     if (status !== "ongoing") {
-      console.log("NOT PLAYING");
+      console.log("NOT PLAYING - Status:", status);
       return;
     }
 
@@ -77,7 +62,6 @@ const Board = ({ board, currentTurn, status, onMove }) => {
 
   const renderSquare = (cell, row, col) => {
     const isSelected = selected && selected.row === row && selected.col === col;
-    //console.log(row, col, cell, isSelected);
 
     return (
       <div

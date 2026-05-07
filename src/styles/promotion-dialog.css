@@ -1,0 +1,278 @@
+/* ============================================
+   PROMOTION DIALOG STYLES
+   ============================================ */
+
+.promotion-dialog {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 3px solid #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: slideIn 0.3s ease-out;
+}
+
+.promotion-dialog h4 {
+  margin: 0 0 10px 0;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.promotion-dialog p {
+  margin: 0 0 15px 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+}
+
+.promotion-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.promotion-btn {
+  padding: 12px 8px;
+  border: 2px solid white;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.promotion-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+.promotion-btn:active {
+  transform: scale(0.98);
+}
+
+/* ============================================
+   GAME CONTROLS STYLES
+   ============================================ */
+
+.game-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.btn-resign,
+.btn-draw {
+  padding: 12px 16px;
+  border: 2px solid #666;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-resign:hover,
+.btn-draw:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-resign:active,
+.btn-draw:active {
+  transform: translateY(0);
+}
+
+.btn-resign {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.btn-draw {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* ============================================
+   DRAW OFFER DIALOG STYLES
+   ============================================ */
+
+.draw-offer-dialog {
+  background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+  border: 3px solid #fff;
+  border-radius: 12px;
+  padding: 18px;
+  margin: 15px 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease-out;
+}
+
+.draw-offer-dialog h4 {
+  margin: 0 0 8px 0;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.draw-offer-dialog p {
+  margin: 0 0 12px 0;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 14px;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-accept,
+.btn-reject {
+  flex: 1;
+  padding: 10px 12px;
+  border: 2px solid white;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.btn-accept {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: #4caf50;
+}
+
+.btn-accept:hover {
+  background: rgba(76, 175, 80, 0.5);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.btn-reject {
+  background: rgba(244, 67, 54, 0.3);
+  border-color: #f44336;
+}
+
+.btn-reject:hover {
+  background: rgba(244, 67, 54, 0.5);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
+/* ============================================
+   ROOM BOX STYLES
+   ============================================ */
+
+.room-box {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  text-align: center;
+  color: white;
+}
+
+.room-box p {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.room-box h3 {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.room-box button {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.room-box button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.02);
+}
+
+/* ============================================
+   LEAVE BUTTON
+   ============================================ */
+
+.leave-btn {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #999;
+  border-radius: 8px;
+  background: #555;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.leave-btn:hover {
+  background: #333;
+  border-color: #666;
+  transform: translateY(-2px);
+}
+
+.leave-btn:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .promotion-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .promotion-btn {
+    padding: 10px 6px;
+    font-size: 14px;
+  }
+
+  .game-controls {
+    flex-direction: row;
+  }
+
+  .btn-resign,
+  .btn-draw {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+}

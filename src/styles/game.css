@@ -1,0 +1,354 @@
+/* ============================================
+   GAME STATUS STYLES - Checkmate, Stalemate, etc.
+   ============================================ */
+
+/* Game Status Container */
+.game-status {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.game-status h3 {
+  margin-top: 0;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.game-status h4 {
+  font-size: 14px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* Status Display */
+.game-status .status {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+/* Turn Indicator */
+.game-status .turn {
+  font-size: 14px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+/* Check Indicator */
+.check-indicator {
+  animation: pulse 1.5s infinite;
+  background: #ff6b6b;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+.check-indicator .warning {
+  display: block;
+  font-size: 14px;
+}
+
+/* Checkmate Indicator */
+.checkmate-indicator {
+  animation: bounce 1s infinite;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  padding: 12px;
+  border-radius: 4px;
+  margin: 10px 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+.checkmate-indicator .critical {
+  display: block;
+  font-size: 16px;
+  color: #fff;
+}
+
+/* Stalemate Indicator */
+.stalemate-indicator {
+  background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+  padding: 12px;
+  border-radius: 4px;
+  margin: 10px 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+.stalemate-indicator .info {
+  display: block;
+  font-size: 16px;
+  color: #fff;
+}
+
+/* Game End Reason */
+.game-end-reason {
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 15px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.game-end-reason strong {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.game-end-reason p {
+  margin: 5px 0;
+  font-size: 13px;
+}
+
+.game-end-reason.checkmate {
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.game-end-reason.stalemate {
+  border-color: #ffd89b;
+  background: rgba(255, 216, 155, 0.1);
+}
+
+.game-end-reason.resignation {
+  border-color: #ffd89b;
+  background: rgba(255, 216, 155, 0.1);
+}
+
+.game-end-reason.draw {
+  border-color: #95c742;
+  background: rgba(149, 199, 66, 0.1);
+}
+
+/* Winner */
+.game-status .winner {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  padding: 12px;
+  border-radius: 6px;
+  margin: 10px 0;
+  font-weight: bold;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Players List */
+.game-status .players {
+  margin-top: 15px;
+}
+
+.game-status .players ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.game-status .players li {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.player-item::before {
+  margin-right: 8px;
+}
+
+/* ============================================
+   GAME CONTROLS - Resign, Draw Offer, etc.
+   ============================================ */
+
+.game-controls {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.game-controls button {
+  flex: 1;
+  min-width: 120px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-resign {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.btn-resign:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+.btn-resign:active {
+  transform: translateY(0);
+}
+
+.btn-draw {
+  background: linear-gradient(135deg, #95c742 0%, #68a357 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(149, 199, 66, 0.4);
+}
+
+.btn-draw:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(149, 199, 66, 0.6);
+}
+
+.btn-draw:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   DRAW OFFER DIALOG
+   ============================================ */
+
+.draw-offer-dialog {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 2px solid #ffd89b;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 15px 0;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease-out;
+}
+
+.draw-offer-dialog h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.draw-offer-dialog p {
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-accept,
+.btn-reject {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-accept {
+  background: linear-gradient(135deg, #95c742 0%, #68a357 100%);
+  color: white;
+}
+
+.btn-accept:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(149, 199, 66, 0.4);
+}
+
+.btn-accept:active {
+  transform: translateY(0);
+}
+
+.btn-reject {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+}
+
+.btn-reject:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.btn-reject:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .game-controls {
+    flex-direction: column;
+  }
+
+  .game-controls button {
+    width: 100%;
+  }
+
+  .dialog-actions {
+    flex-direction: column;
+  }
+
+  .btn-accept,
+  .btn-reject {
+    width: 100%;
+  }
+}
