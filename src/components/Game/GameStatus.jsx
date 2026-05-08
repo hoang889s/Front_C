@@ -1,27 +1,70 @@
 import "../../styles/game.css";
+import "../../styles/game-status.css"; 
 
-// ✅ UPDATED GameStatus component
-const GameStatus = ({ 
-  status, 
-  currentTurn, 
-  players, 
+const GameStatus = ({
+  status,
+  currentTurn,
+  players,
   winner,
   checkmate,
   stalemate,
   check,
   gameStatus,
   reason,
+  isAI, 
+  aiThinking, 
 }) => {
-  // Normalize players về array
-  const safePlayers = Array.isArray(players) 
-    ? players 
-    : players 
-    ? Object.values(players) 
-    : [];
+  
+  const getPlayers = () => {
+    if (!players) return { white: null, black: null };
 
-  // ✅ Render status message
+    if (players.white && players.black) {
+      return players;
+    }
+
+    if (Array.isArray(players)) {
+      return {
+        white: players[0] || null,
+        black: players[1] || null,
+      };
+    }
+
+    return { white: null, black: null };
+  };
+
+  const safePlayers = getPlayers();
+
+  
+  const getPlayerName = (color) => {
+    const player = safePlayers[color];
+
+    if (isAI) {
+      // AI game - hiển thị "🤖 AI" hoặc username
+      if (color === "white") {
+        return (
+          <>
+            {players?.white === "AI" ? "🤖 AI" : `👤 ${player?.username || "White"}`}
+          </>
+        );
+      } else {
+        return (
+          <>
+            {players?.black === "AI" ? "🤖 AI" : `👤 ${player?.username || "Black"}`}
+          </>
+        );
+      }
+    }
+
+    // Human game
+    return `${color === "white" ? "⚪" : "⚫"} ${player?.username || `Player ${color}`}`;
+  };
+
+  
   const renderStatus = () => {
-    // ✅ Match backend status values
+    if (gameStatus && gameStatus !== "ongoing") {
+      return getGameEndMessage();
+    }
+
     switch (status) {
       case "waiting":
         return "Đang chờ người chơi...";
@@ -34,9 +77,27 @@ const GameStatus = ({
     }
   };
 
-  // ✅ NEW: Render game end reason
+  
+  const getGameEndMessage = () => {
+    if (gameStatus === "ongoing") return "Đang chơi";
+
+    switch (reason) {
+      case "checkmate":
+        return "♔ Chiếu bí!";
+      case "stalemate":
+        return "♚ Hòa (Bế tắc)";
+      case "resignation":
+        return "🏳️ Đầu hàng";
+      case "draw_agreed":
+        return "🤝 Đã hòa";
+      default:
+        return `Kết thúc (${reason || gameStatus})`;
+    }
+  };
+
+  
   const renderGameEndReason = () => {
-    if (status !== "finished") {
+    if (gameStatus === "ongoing") {
       return null;
     }
 
@@ -44,22 +105,40 @@ const GameStatus = ({
       case "checkmate":
         return (
           <div className="game-end-reason checkmate">
-            <strong>♔ Checkmate!</strong>
-            {winner && <p>Người thắng: {winner}</p>}
+            <strong>♔ Chiếu bí!</strong>
+            {winner && (
+              <p>
+                Người thắng:{" "}
+                {isAI
+                  ? winner === "white"
+                    ? "⚪ Quân Trắng"
+                    : "⚫ Quân Đen"
+                  : `Player ${winner}`}
+              </p>
+            )}
           </div>
         );
       case "stalemate":
         return (
           <div className="game-end-reason stalemate">
-            <strong>♚ Hòa (Stalemate)</strong>
-            <p>Trò chơi hòa</p>
+            <strong>♚ Hòa (Bế tắc)</strong>
+            <p>Trò chơi hòa - Bất cứ bên nào cũng không có nước đi hợp lệ</p>
           </div>
         );
       case "resignation":
         return (
           <div className="game-end-reason resignation">
             <strong>🏳️ Đầu hàng</strong>
-            {winner && <p>Người thắng: {winner}</p>}
+            {winner && (
+              <p>
+                Người thắng:{" "}
+                {isAI
+                  ? winner === "white"
+                    ? "⚪ Quân Trắng"
+                    : "⚫ Quân Đen"
+                  : `Player ${winner}`}
+              </p>
+            )}
           </div>
         );
       case "draw_agreed":
@@ -74,83 +153,177 @@ const GameStatus = ({
     }
   };
 
-  // ✅ Render turn indicator
+  
   const renderTurn = () => {
-    // ✅ FIX: Match backend status values
-    if (status !== "ongoing") {
+    if (gameStatus !== "ongoing") {
       return null;
     }
+
+    const turnColor = currentTurn === "white" ? "⚪ Trắng" : "⚫ Đen";
+    const isAITurn = isAI && (
+      (currentTurn === "white" && safePlayers.white === "AI") ||
+      (currentTurn === "black" && safePlayers.black === "AI")
+    );
+
     return (
-      <div className="turn">
-        Lượt: <strong>{currentTurn}</strong>
+      <div className={`turn ${isAITurn ? "ai-turn" : "human-turn"}`}>
+        <span className="turn-label">Lượt:</span>
+        <span className="turn-value">{turnColor}</span>
+        {isAITurn && <span className="ai-indicator">🤖</span>}
       </div>
     );
   };
 
-  // ✅ NEW: Render check indicator
+  
   const renderCheckStatus = () => {
-    if (status !== "ongoing" || !check) {
+    if (gameStatus !== "ongoing" || !check) {
       return null;
     }
+
     return (
-      <div className="check-indicator">
-        <span className="warning">⚠️ Vua đang bị tấn công!</span>
+      <div className="check-indicator warning">
+        <span className="icon">⚠️</span>
+        <span className="text">Vua đang bị tấn công!</span>
       </div>
     );
   };
 
-  // ✅ NEW: Render checkmate indicator
+  
   const renderCheckmateStatus = () => {
     if (!checkmate) {
       return null;
     }
+
     return (
-      <div className="checkmate-indicator">
-        <span className="critical">♔ CHECKMATE!</span>
+      <div className="checkmate-indicator critical">
+        <span className="icon">♔</span>
+        <span className="text">CHIẾU BÍ!</span>
       </div>
     );
   };
 
-  // ✅ NEW: Render stalemate indicator
+  
   const renderStalemateStatus = () => {
     if (!stalemate) {
       return null;
     }
+
     return (
-      <div className="stalemate-indicator">
-        <span className="info">♚ STALEMATE</span>
+      <div className="stalemate-indicator info">
+        <span className="icon">♚</span>
+        <span className="text">BẾ TẮC - HÒA</span>
       </div>
     );
   };
 
-  // ✅ Render winner
-  const renderWinner = () => {
-    if (status !== "finished" || !winner) {
+  
+  const renderAIThinking = () => {
+    if (!isAI || !aiThinking) {
       return null;
     }
+
     return (
-      <div className="winner">
-        <strong>👑 Người thắng:</strong> {winner}
+      <div className="ai-thinking-indicator">
+        <span className="spinner"></span>
+        <span className="text">🤖 AI đang suy nghĩ...</span>
+      </div>
+    );
+  };
+
+  
+  const renderWinner = () => {
+    if (gameStatus === "ongoing" || !winner) {
+      return null;
+    }
+
+    const winnerName = isAI
+      ? winner === "white"
+        ? "⚪ Quân Trắng"
+        : "⚫ Quân Đen"
+      : `Player ${winner}`;
+
+    return (
+      <div className="winner-section">
+        <strong>👑 Người thắng:</strong>
+        <span className="winner-name">{winnerName}</span>
+      </div>
+    );
+  };
+
+  
+  const renderPlayerInfo = () => {
+    if (!isAI) {
+      return null;
+    }
+
+    return (
+      <div className="player-info-ai">
+        <div className="player-row white">
+          <span className="player-color">⚪ Trắng</span>
+          <span className="player-name">{getPlayerName("white")}</span>
+          {currentTurn === "white" && <span className="turn-dot">●</span>}
+        </div>
+        <div className="divider"></div>
+        <div className="player-row black">
+          <span className="player-color">⚫ Đen</span>
+          <span className="player-name">{getPlayerName("black")}</span>
+          {currentTurn === "black" && <span className="turn-dot">●</span>}
+        </div>
+      </div>
+    );
+  };
+
+  
+  const renderPlayersList = () => {
+    if (isAI) {
+      return null; 
+    }
+
+    return (
+      <div className="players">
+        <h4>Người chơi</h4>
+        <div className="player-list">
+          <div className="player-item white">
+            <span className="color-indicator">⚪</span>
+            <span className="username">{safePlayers.white?.username || "White"}</span>
+          </div>
+          <div className="player-item black">
+            <span className="color-indicator">⚫</span>
+            <span className="username">{safePlayers.black?.username || "Black"}</span>
+          </div>
+        </div>
       </div>
     );
   };
 
   return (
-    <div className="game-status">
-      <h3>Trạng thái game</h3>
+    <div className={`game-status ${isAI ? "ai-mode" : "human-mode"}`}>
+      <div className="status-header">
+        <h3>Trạng thái game</h3>
+        {/* ✨ MỚI: AI badge */}
+        {isAI && (
+          <span className="ai-badge-mini">
+            🤖 AI
+          </span>
+        )}
+      </div>
 
-      <div className="status">{renderStatus()}</div>
+      {/* ✨ MỚI: AI thinking indicator */}
+      {renderAIThinking()}
 
-      {/* Game still ongoing - show turn */}
+      {/* Main status */}
+      <div className="status-main">{renderStatus()}</div>
+
+      {/* Game ongoing - show turn */}
       {renderTurn()}
 
-      {/* Check status */}
+      {/* Check warning */}
       {renderCheckStatus()}
 
-      {/* Checkmate status */}
+      {/* Checkmate indicator */}
       {renderCheckmateStatus()}
 
-      {/* Stalemate status */}
+      {/* Stalemate indicator */}
       {renderStalemateStatus()}
 
       {/* Game ended - show reason */}
@@ -159,21 +332,8 @@ const GameStatus = ({
       {/* Winner info */}
       {renderWinner()}
 
-      {/* Players list */}
-      <div className="players">
-        <h4>Người chơi</h4>
-        {safePlayers.length === 0 ? (
-          <p>Chưa có người chơi</p>
-        ) : (
-          <ul>
-            {safePlayers.map((p, index) => (
-              <li key={index} className="player-item">
-                {index === 0 ? "⚪" : "⚫"} {p?.username || p}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {/* Players info */}
+      {isAI ? renderPlayerInfo() : renderPlayersList()}
     </div>
   );
 };

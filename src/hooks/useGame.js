@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { socketService } from "../services/socket/socketService";
 
 export const useGame = (token) => {
@@ -22,6 +22,8 @@ export const useGame = (token) => {
         gameStatus: cached.game_status ?? "ongoing",
         winner: cached.winner ?? null,
         reason: null,
+        isAI: cached.isAI ?? false,  // ← THÊM AI flag
+        aiThinking: false,  // ← THÊM state "đang suy nghĩ"
       };
     }
     return {
@@ -40,12 +42,15 @@ export const useGame = (token) => {
       gameStatus: "ongoing",
       winner: null,
       reason: null,
+      isAI: false,
+      aiThinking: false,
     };
   });
 
   const [connected, setConnected] = useState(false);
+  const currentUserIdRef = useRef(null);  // ← Track user ID để biết ai là AI player
 
-  // connect sockets
+  // Connect sockets
   useEffect(() => {
     if (!token) {
       console.log("[useGame] No token");
@@ -57,14 +62,17 @@ export const useGame = (token) => {
     if (socket.connected) {
       setConnected(true);
     }
+    
     const handleConnect = () => {
       setConnected(true);
     };
     const handleError = () => {
       setConnected(false);
     };
+    
     socket.on("connect", handleConnect);
     socket.on("connect_error", handleError);
+    
     return () => {
       socket.off("connect", handleConnect);
       socket.off("connect_error", handleError);
@@ -81,13 +89,15 @@ export const useGame = (token) => {
 
     console.log("[useGame] Setting up game listeners");
 
-    // ✅ Game state - Cập nhật để nhận game_status + winner
+    // Game state handler
     const handleGameState = (data) => {
       console.log("[Socket Event] game_state:", data);
-      console.log("ROOM CODE FROM SERVER:", data.room_code);
-      console.log("GAME STATUS FROM SERVER:", data.status);
-
-      setGameState({
+      
+      // Detect AI game mode
+      const isAIGame = data.game_id && (data.mode === "ai" || data.is_ai);
+      
+      setGameState((prev) => ({
+        ...prev,
         gameId: data.gameId ?? data.game_id ?? null,
         roomCode: data.room_code ?? data.roomCode ?? null,
         board: data.board ?? [],
@@ -103,33 +113,31 @@ export const useGame = (token) => {
         gameStatus: data.game_status ?? data.status ?? "ongoing",
         winner: data.winner ?? null,
         reason: null,
-      });
-    };
+        isAI: isAIGame,
+        aiThinking: false,
+      }));
 
-    // ✅ Move update - Cập nhật để nhận stalemate + game_status + winner
-    const handleMove = (data) => {
-      console.log("[Socket Event] move:", data);
-
-      console.log("📋 OLD board:");
-      console.log("  - Row 6 (rank 2):", gameState.board[6]);
-
-      console.log("📋 NEW board:");
-      console.log("  - Row 6 (rank 2):", data.board[6]);
-
-      console.log("📊 FEN:");
-      console.log("  - OLD:", gameState.fen);
-      console.log("  - NEW:", data.fen);
-
-      // ✅ Kiểm tra game end
-      if (data.checkmate || data.stalemate) {
-        console.log("[Socket Event] GAME ENDED!");
-        if (data.checkmate) {
-          console.log(`  - Checkmate! Winner: ${data.winner}`);
-        }
-        if (data.stalemate) {
-          console.log("  - Stalemate! Draw");
+      // ← THÊM: Nếu là AI game và lượt của AI, emit ai_move sau 1s
+      if (isAIGame && data.turn) {
+        // Xác định xem AI là white hay black
+        const userIsWhite = currentUserIdRef.current === data.white;
+        const isAITurn = userIsWhite ? data.turn === "black" : data.turn === "white";
+        
+        if (isAITurn) {
+          console.log("[useGame] AI turn detected, calling AI move...");
+          setTimeout(() => {
+            // Emit AI move event
+            socketService.emit("ai_move", {
+              game_id: data.gameId ?? data.game_id,
+            });
+          }, 500);  // Delay 500ms để có cảm giác AI suy nghĩ
         }
       }
+    };
+
+    // Move handler
+    const handleMove = (data) => {
+      console.log("[Socket Event] move:", data);
 
       setGameState((prev) => ({
         ...prev,
@@ -144,11 +152,28 @@ export const useGame = (token) => {
         gameStatus: data.game_status ?? prev.gameStatus,
         winner: data.winner ?? null,
         reason: data.reason ?? null,
+        aiThinking: false,
       }));
-      console.log("[Socket Event] gameState updated");
+
+      // ← THÊM: Kiểm tra xem có phải lượt AI không
+      if (gameState.isAI && data.turn && !data.checkmate && !data.stalemate) {
+        const userIsWhite = currentUserIdRef.current === gameState.white;
+        const isAITurn = userIsWhite ? data.turn === "black" : data.turn === "white";
+        
+        if (isAITurn) {
+          console.log("[useGame] AI turn after move, calling AI move...");
+          setGameState((prev) => ({ ...prev, aiThinking: true }));
+          
+          setTimeout(() => {
+            socketService.emit("ai_move", {
+              game_id: gameState.gameId,
+            });
+          }, 500);
+        }
+      }
     };
 
-    // ✅ AI move - Cập nhật để nhận stalemate + game_status + winner
+    // AI Move handler
     const handleAIMove = (data) => {
       console.log("[Socket Event] ai_move:", data);
 
@@ -174,17 +199,13 @@ export const useGame = (token) => {
         status: data.status ?? prev.status,
         gameStatus: data.game_status ?? prev.gameStatus,
         winner: data.winner ?? null,
+        aiThinking: false,
       }));
     };
 
-    // ✅ NEW: Game ended event (resignation / draw agreed)
+    // Game ended handler
     const handleGameEnded = (data) => {
       console.log("[Socket Event] game_ended:", data);
-      console.log(`  - Reason: ${data.reason}`);
-      console.log(`  - Winner: ${data.winner}`);
-      if (data.loser) {
-        console.log(`  - Loser: ${data.loser}`);
-      }
 
       setGameState((prev) => ({
         ...prev,
@@ -192,17 +213,13 @@ export const useGame = (token) => {
         gameStatus: data.status ?? prev.gameStatus,
         winner: data.winner ?? null,
         reason: data.reason ?? null,
+        aiThinking: false,
       }));
     };
 
-    // ✅ NEW: Draw offered
+    // Draw offered handler
     const handleDrawOffered = (data) => {
       console.log("[Socket Event] draw_offered:", data);
-      console.log(
-        `  - Offered by: ${data.offered_by_name} (ID: ${data.offered_by})`
-      );
-
-      // Emit event để frontend show dialog
       window.dispatchEvent(
         new CustomEvent("drawOffered", {
           detail: {
@@ -214,14 +231,9 @@ export const useGame = (token) => {
       );
     };
 
-    // ✅ NEW: Draw rejected
+    // Draw rejected handler
     const handleDrawRejected = (data) => {
       console.log("[Socket Event] draw_rejected:", data);
-      console.log(
-        `  - Rejected by: ${data.rejected_by_name} (ID: ${data.rejected_by})`
-      );
-
-      // Emit event để frontend show notification
       window.dispatchEvent(
         new CustomEvent("drawRejected", {
           detail: {
@@ -233,19 +245,10 @@ export const useGame = (token) => {
       );
     };
 
-    // ✅ NEW: Draw offer sent
-    const handleDrawOfferSent = (data) => {
-      console.log("[Socket Event] draw_offer_sent:", data);
-      // Notification: "Đã gửi đề nghị hòa"
-      window.dispatchEvent(
-        new CustomEvent("drawOfferSent", {
-          detail: data,
-        })
-      );
-    };
-
+    // Error handler
     const handleError = (err) => {
       console.error("[GAME ERROR]", err);
+      setGameState((prev) => ({ ...prev, aiThinking: false }));
     };
 
     // Attach listeners
@@ -255,7 +258,6 @@ export const useGame = (token) => {
     socketService.on("game_ended", handleGameEnded);
     socketService.on("draw_offered", handleDrawOffered);
     socketService.on("draw_rejected", handleDrawRejected);
-    socketService.on("draw_offer_sent", handleDrawOfferSent);
     socketService.on("game_error", handleError);
 
     // Cleanup
@@ -266,10 +268,9 @@ export const useGame = (token) => {
       socketService.off("game_ended", handleGameEnded);
       socketService.off("draw_offered", handleDrawOffered);
       socketService.off("draw_rejected", handleDrawRejected);
-      socketService.off("draw_offer_sent", handleDrawOfferSent);
       socketService.off("game_error", handleError);
     };
-  }, [connected]);
+  }, [connected, gameState.isAI, gameState.white, gameState.gameId]);
 
   // Game actions
   const joinGame = useCallback(
@@ -297,6 +298,12 @@ export const useGame = (token) => {
         return;
       }
 
+      // Không cho phép move nếu AI đang suy nghĩ
+      if (gameState.aiThinking) {
+        console.log("[makeMove] AI is thinking...");
+        return;
+      }
+
       let payload = {
         game_id: gameState.gameId,
       };
@@ -316,7 +323,7 @@ export const useGame = (token) => {
 
       socketService.emit("move", payload);
     },
-    [gameState.gameId]
+    [gameState.gameId, gameState.aiThinking]
   );
 
   const aiMove = useCallback(() => {
@@ -324,12 +331,13 @@ export const useGame = (token) => {
     if (!socket?.connected) {
       return;
     }
+    console.log("[aiMove] Requesting AI move...");
+    setGameState((prev) => ({ ...prev, aiThinking: true }));
     socketService.emit("ai_move", {
       game_id: gameState.gameId,
     });
   }, [gameState.gameId]);
 
-  // ✅ NEW: Resign
   const resign = useCallback(() => {
     const socket = socketService.getSocket();
     if (!socket?.connected) {
@@ -342,7 +350,6 @@ export const useGame = (token) => {
     });
   }, [gameState.gameId]);
 
-  // ✅ NEW: Offer draw
   const offerDraw = useCallback(() => {
     const socket = socketService.getSocket();
     if (!socket?.connected) {
@@ -355,7 +362,6 @@ export const useGame = (token) => {
     });
   }, [gameState.gameId]);
 
-  // ✅ NEW: Accept draw
   const acceptDraw = useCallback(() => {
     const socket = socketService.getSocket();
     if (!socket?.connected) {
@@ -368,7 +374,6 @@ export const useGame = (token) => {
     });
   }, [gameState.gameId]);
 
-  // ✅ NEW: Reject draw
   const rejectDraw = useCallback(() => {
     const socket = socketService.getSocket();
     if (!socket?.connected) {
@@ -391,7 +396,6 @@ export const useGame = (token) => {
       game_id: gameId,
     });
 
-    // Reset state
     socketService.clearGameStateCache();
     setGameState({
       gameId: null,
@@ -409,6 +413,8 @@ export const useGame = (token) => {
       gameStatus: "ongoing",
       winner: null,
       reason: null,
+      isAI: false,
+      aiThinking: false,
     });
   }, []);
 
@@ -423,5 +429,8 @@ export const useGame = (token) => {
     acceptDraw,
     rejectDraw,
     leaveGame,
+    setCurrentUserId: (userId) => {
+      currentUserIdRef.current = userId;
+    },
   };
 };

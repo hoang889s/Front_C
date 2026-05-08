@@ -1,0 +1,309 @@
+/* ai-indicator.css */
+/* Styles cho AI Mode features */
+
+/* ============================================
+   1. AI INDICATOR BAR (Top of page)
+   ============================================ */
+
+.ai-indicator-bar {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 3px solid #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ai-thinking {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-weight: 500;
+  font-size: 13px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.ai-thinking .spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* ============================================
+   2. NOTIFICATIONS
+   ============================================ */
+
+.game-notification {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: #333;
+  font-weight: 500;
+  z-index: 1000;
+  animation: slideInRight 0.3s ease-out;
+  max-width: 300px;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================
+   3. BOARD OVERLAY (AI thinking, waiting)
+   ============================================ */
+
+.board-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  border-radius: 8px;
+  backdrop-filter: blur(2px);
+}
+
+.board-overlay.ai-thinking {
+  background: rgba(102, 126, 234, 0.3);
+}
+
+.board-overlay.waiting {
+  background: rgba(100, 100, 100, 0.3);
+}
+
+.overlay-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.spinner-large {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.overlay-content p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ============================================
+   4. PLAYER INFO BOX
+   ============================================ */
+
+.player-info-box {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.player-info-box.ai-mode {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+}
+
+.player-info-box.human-mode {
+  border-color: #4caf50;
+  background: linear-gradient(135deg, #f8fff8 0%, #f0fff0 100%);
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.player-color {
+  flex: 0 0 60px;
+  color: #666;
+  font-size: 13px;
+}
+
+.player-name {
+  flex: 1;
+  color: #333;
+  font-weight: 600;
+}
+
+.turn-indicator {
+  width: 10px;
+  height: 10px;
+  background: #667eea;
+  border-radius: 50%;
+  animation: blink 1s ease-in-out infinite;
+  margin-left: 10px;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.player-row.white {
+  color: #222;
+}
+
+.player-row.black {
+  color: #111;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 8px 0;
+}
+
+/* ============================================
+   5. GAME CONTROLS - DISABLE STATE
+   ============================================ */
+
+.game-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.game-controls button:disabled:hover {
+  background: none;
+  transform: none;
+}
+
+/* ============================================
+   6. RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .ai-indicator-bar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 16px;
+  }
+
+  .ai-thinking {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .game-notification {
+    top: 70px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .player-info-box {
+    font-size: 13px;
+  }
+
+  .player-row {
+    padding: 8px 0;
+  }
+}
+
+/* ============================================
+   7. DARK MODE SUPPORT (Optional)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  .game-notification {
+    background: #333;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .player-info-box {
+    background: #2a2a2a;
+    border-color: #444;
+    color: white;
+  }
+
+  .player-color {
+    color: #aaa;
+  }
+
+  .player-name {
+    color: #eee;
+  }
+
+  .divider {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}

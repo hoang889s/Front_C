@@ -75,3 +75,22 @@
 .move-text {
     font-family: monospace;
 }
+.board.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+ 
+.square.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+ 
+/* Hoặc thêm interactive feedback */
+.board:not(.disabled) .square:hover {
+  background-color: rgba(200, 200, 200, 0.3);
+  cursor: pointer;
+}
+ 
+.board.disabled .square {
+  background-color: inherit;
+}

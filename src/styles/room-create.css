@@ -1,0 +1,313 @@
+/* roomCreate.css */
+
+.room-create-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.room-create-card {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.room-create-card h2 {
+  margin: 0 0 30px 0;
+  color: #333;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 28px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 12px;
+  color: #555;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Radio Groups */
+.radio-group,
+.color-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.radio-option,
+.color-option {
+  flex: 1;
+  min-width: 160px;
+  position: relative;
+  cursor: pointer;
+}
+
+.radio-option input,
+.color-option input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.radio-option,
+.color-option {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.radio-option:hover,
+.color-option:hover {
+  border-color: #667eea;
+  background: #f0f4ff;
+}
+
+.radio-option input:checked + .radio-label,
+.color-option input:checked + .color-label {
+  font-weight: 700;
+}
+
+.radio-option input:checked,
+.color-option input:checked {
+  /* Trigger parent style */
+}
+
+/* Checked state */
+.radio-option input:checked + .radio-label::before,
+.color-option input:checked + .color-label::before {
+  content: '✓';
+  display: inline-block;
+  margin-right: 8px;
+  color: #667eea;
+  font-weight: bold;
+}
+
+.radio-option input:checked,
+.color-option input:checked {
+}
+
+.radio-option:has(input:checked),
+.color-option:has(input:checked) {
+  border-color: #667eea;
+  background: #f0f4ff;
+}
+
+.radio-label,
+.color-label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* Color Options */
+.color-option.white {
+  background: #f5f5f5;
+}
+
+.color-option.black {
+  background: #2a2a2a;
+}
+
+.color-option.white:has(input:checked) {
+  background: #fff9e6;
+  border-color: #ffd700;
+}
+
+.color-option.black:has(input:checked) {
+  background: #3a3a3a;
+  border-color: #888;
+}
+
+.color-option.white .color-label {
+  color: #333;
+}
+
+.color-option.black .color-label {
+  color: #fff;
+}
+
+/* Mode Info */
+.mode-info {
+  background: #f0f4ff;
+  border-left: 4px solid #667eea;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: #555;
+}
+
+.mode-info p {
+  margin: 0;
+}
+
+/* Buttons */
+.btn-create,
+.btn-copy {
+  width: 100%;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.btn-create {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-create:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+}
+
+.btn-create:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-create:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-create.loading {
+  opacity: 0.9;
+}
+
+.btn-copy {
+  background: #f0f4ff;
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
+.btn-copy:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Messages */
+.error-message {
+  background: #ffe6e6;
+  border: 1px solid #ff6b6b;
+  color: #c92a2a;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.room-code-message {
+  background: #e6ffe6;
+  border: 2px solid #51cf66;
+  color: #2f5233;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.room-code-message strong {
+  display: block;
+  font-size: 24px;
+  margin: 8px 0;
+  font-family: 'Courier New', monospace;
+  color: #2f5233;
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  margin: 8px 0 0 0;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .room-create-card {
+    padding: 24px;
+  }
+
+  .room-create-card h2 {
+    font-size: 22px;
+    margin-bottom: 24px;
+  }
+
+  .radio-option,
+  .color-option {
+    min-width: 100%;
+  }
+
+  .radio-group,
+  .color-group {
+    flex-direction: column;
+  }
+}

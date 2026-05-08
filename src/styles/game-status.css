@@ -1,0 +1,477 @@
+/* ============================================
+   GAME-STATUS.CSS - Enhanced for AI Mode
+   ============================================ */
+
+/* ============================================
+   1. GAME STATUS CONTAINER
+   ============================================ */
+
+.game-status {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.game-status.ai-mode {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+}
+
+.game-status.human-mode {
+  border-color: #4caf50;
+  background: linear-gradient(135deg, #f8fff8 0%, #f0fff0 100%);
+}
+
+/* ============================================
+   2. STATUS HEADER
+   ============================================ */
+
+.status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.status-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.ai-badge-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(102, 126, 234, 0.15);
+  color: #667eea;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ============================================
+   3. STATUS MAIN
+   ============================================ */
+
+.status-main {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  padding: 10px 0;
+  text-align: center;
+}
+
+/* ============================================
+   4. TURN INDICATOR
+   ============================================ */
+
+.turn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 6px;
+  margin: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.turn.ai-turn {
+  background: rgba(102, 126, 234, 0.15);
+  border-left: 3px solid #667eea;
+}
+
+.turn.human-turn {
+  background: rgba(76, 175, 80, 0.1);
+  border-left: 3px solid #4caf50;
+}
+
+.turn-label {
+  color: #666;
+  font-weight: 600;
+}
+
+.turn-value {
+  color: #333;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.ai-indicator {
+  margin-left: auto;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* ============================================
+   5. STATUS INDICATORS
+   ============================================ */
+
+.check-indicator,
+.checkmate-indicator,
+.stalemate-indicator,
+.ai-thinking-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 8px 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.check-indicator.warning {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+  animation: blink 1s ease-in-out infinite;
+}
+
+.checkmate-indicator.critical {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  animation: pulse 0.8s ease-in-out infinite;
+}
+
+.stalemate-indicator.info {
+  background: #d1ecf1;
+  border: 1px solid #bee5eb;
+  color: #0c5460;
+}
+
+.ai-thinking-indicator {
+  background: rgba(102, 126, 234, 0.15);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  color: #667eea;
+  justify-content: center;
+}
+
+.ai-thinking-indicator .spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-top: 2px solid #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.indicator-icon {
+  font-size: 16px;
+}
+
+.indicator-text {
+  flex: 1;
+}
+
+/* ============================================
+   6. GAME END REASON
+   ============================================ */
+
+.game-end-reason {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 12px;
+  border-radius: 6px;
+  margin: 8px 0;
+  border-left: 3px solid #666;
+  font-size: 13px;
+}
+
+.game-end-reason strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.game-end-reason p {
+  margin: 0;
+  color: #555;
+  font-size: 13px;
+}
+
+.game-end-reason.checkmate {
+  border-left-color: #d32f2f;
+  background: rgba(211, 47, 47, 0.05);
+}
+
+.game-end-reason.stalemate {
+  border-left-color: #ff9800;
+  background: rgba(255, 152, 0, 0.05);
+}
+
+.game-end-reason.resignation {
+  border-left-color: #f57c00;
+  background: rgba(245, 124, 0, 0.05);
+}
+
+.game-end-reason.draw {
+  border-left-color: #4caf50;
+  background: rgba(76, 175, 80, 0.05);
+}
+
+/* ============================================
+   7. WINNER SECTION
+   ============================================ */
+
+.winner-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: linear-gradient(135deg, #fff9e6 0%, #fffce6 100%);
+  border: 2px solid #ffd700;
+  border-radius: 6px;
+  margin: 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.winner-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: white;
+  border-radius: 4px;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+/* ============================================
+   8. PLAYER INFO - AI MODE
+   ============================================ */
+
+.player-info-ai {
+  background: rgba(102, 126, 234, 0.05);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.player-color {
+  flex: 0 0 60px;
+  color: #666;
+  font-weight: 600;
+}
+
+.player-name {
+  flex: 1;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.turn-dot {
+  width: 8px;
+  height: 8px;
+  background: #667eea;
+  border-radius: 50%;
+  margin-left: auto;
+  animation: blink 1s ease-in-out infinite;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(102, 126, 234, 0.2);
+  margin: 8px 0;
+}
+
+/* ============================================
+   9. PLAYERS LIST - HUMAN MODE
+   ============================================ */
+
+.players {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.players h4 {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.player-item.white {
+  border-left: 3px solid #ccc;
+}
+
+.player-item.black {
+  border-left: 3px solid #333;
+}
+
+.color-indicator {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.username {
+  color: #333;
+  flex: 1;
+}
+
+/* ============================================
+   10. RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .game-status {
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  .status-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .status-header h3 {
+    font-size: 14px;
+  }
+
+  .turn {
+    font-size: 12px;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .check-indicator,
+  .checkmate-indicator,
+  .stalemate-indicator {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .winner-section {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .player-row {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+
+  .player-item {
+    font-size: 12px;
+    padding: 6px;
+  }
+}
+
+/* ============================================
+   11. DARK MODE SUPPORT (Optional)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  .game-status {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #eee;
+  }
+
+  .game-status.ai-mode {
+    background: linear-gradient(135deg, #1e1e4f 0%, #2a2a5a 100%);
+    border-color: #667eea;
+  }
+
+  .status-header {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .status-header h3 {
+    color: #fff;
+  }
+
+  .status-main {
+    color: #eee;
+  }
+
+  .turn-label {
+    color: #aaa;
+  }
+
+  .turn-value {
+    color: #fff;
+  }
+
+  .player-color {
+    color: #bbb;
+  }
+
+  .player-name {
+    color: #eee;
+  }
+
+  .divider {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
