@@ -128,7 +128,7 @@ export const useGame = (token) => {
           setTimeout(() => {
             // Emit AI move event
             socketService.emit("ai_move", {
-              game_id: data.gameId ?? data.game_id,
+              game_id: data.gameId || data.game_id,
             });
           }, 500);  // Delay 500ms để có cảm giác AI suy nghĩ
         }

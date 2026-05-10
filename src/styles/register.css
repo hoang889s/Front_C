@@ -1,0 +1,102 @@
+/* Register.css */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px); /* Trừ đi chiều cao ước tính của Navbar */
+  padding: 20px;
+  background-color: #f4f4f4; /* Nền sáng để làm nổi bật form */
+}
+
+.register-card {
+  background-color: #2C3947; /* Màu chủ đạo */
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 450px; /* Độ rộng tối đa của form */
+}
+
+.register-card h2 {
+  color: #cebfa0;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  color: #cebfa0;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 6px;
+  border: 1px solid #cebfa0;
+  background-color: rgba(206, 191, 160, 0.1);
+  color: #fff;
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box; /* Quan trọng để input không bị tràn */
+}
+
+.form-group input:focus {
+  border-color: #ab937b;
+  background-color: rgba(206, 191, 160, 0.2);
+  box-shadow: 0 0 8px rgba(171, 147, 123, 0.4);
+}
+
+.register-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #ab937b;
+  color: #2C3947;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.register-btn:hover:not(:disabled) {
+  background-color: #cebfa0;
+  transform: translateY(-2px);
+}
+
+.register-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.msg {
+  text-align: center;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.msg-error { background: rgba(255, 0, 0, 0.1); color: #ff6b6b; }
+.msg-success { background: rgba(0, 255, 0, 0.1); color: #51cf66; }
+
+/* Responsive cho thiết bị di động */
+@media (max-width: 480px) {
+  .register-card {
+    padding: 1.5rem;
+  }
+  
+  .register-card h2 {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,32 @@
+/* LoginPage.css */
+.auth-page-container {
+  display: flex;
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  align-items: flex-start; /* Căn các card lên trên đầu */
+  gap: 40px; /* Khoảng cách giữa Login và Register */
+  padding: 40px 20px;
+  min-height: calc(100vh - 80px);
+  background-color: #f4f4f4;
+  flex-wrap: wrap; /* Tự động xuống dòng khi màn hình nhỏ */
+}
+
+/* Đảm bảo mỗi form chiếm không gian hợp lý */
+.auth-page-container > div {
+  flex: 1;
+  max-width: 450px; /* Độ rộng tối đa cho mỗi form */
+  min-width: 320px; /* Độ rộng tối thiểu để không bị quá hẹp trên mobile */
+}
+
+/* Responsive: Khi màn hình nhỏ hơn 850px (hoặc tùy bạn chọn) */
+@media (max-width: 850px) {
+  .auth-page-container {
+    flex-direction: column; /* Xếp chồng lên nhau */
+    align-items: center; /* Căn giữa các card */
+    gap: 20px;
+  }
+  
+  .auth-page-container > div {
+    width: 100%;
+    max-width: 100%;
+  }
+}

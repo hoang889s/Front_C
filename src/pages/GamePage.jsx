@@ -10,14 +10,13 @@ import GameStatus from "../components/Game/GameStatus";
 import Loading from "../components/Common/Loading";
 
 import { isPromotionMove, createPromotionMove } from "../utils/Promotionutils";
-import "../styles/promotion-dialog.css";
-import "../styles/ai-indicator.css"; // ✨ THÊM CSS CHO AI
 
+import "../styles/game-page.css";
 const GamePage = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
   const { token, user } = useAuth();
-
+ 
   const {
     gameState,
     connected,
@@ -28,33 +27,26 @@ const GamePage = () => {
     acceptDraw,
     rejectDraw,
     leaveGame,
-    setCurrentUserId, // ✨ MỚI: Set user ID để detect AI game
+    setCurrentUserId,
   } = useGame(token);
-
+ 
   const joinedGameIdRef = useRef(null);
-
-  // State cho draw dialog
   const [drawOffer, setDrawOffer] = useState(null);
-
-  // State cho pawn promotion
   const [promotionData, setPromotionData] = useState(null);
-
-  // ✨ MỚI: State cho AI notification
   const [aiNotification, setAINotification] = useState(null);
-
-  // ✨ MỚI: Set user ID vào gameState hook
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+ 
   useEffect(() => {
     if (user?.id) {
       setCurrentUserId(user.id);
     }
   }, [user?.id, setCurrentUserId]);
-
-  // Listen cho custom events từ socket
+ 
   useEffect(() => {
     const handleDrawOffered = (e) => {
       const { gameId: offeredGameId, offeredBy, offeredByName } = e.detail;
       console.log("[GamePage] Draw offered:", e.detail);
-
+ 
       if (offeredGameId === gameState.gameId) {
         setDrawOffer({
           offeredBy,
@@ -62,32 +54,30 @@ const GamePage = () => {
         });
       }
     };
-
+ 
     const handleDrawOfferSent = (e) => {
       console.log("[GamePage] Draw offer sent:", e.detail);
-      // Show notification
       showNotification("Đã gửi đề nghị hòa");
     };
-
+ 
     const handleDrawRejected = (e) => {
       const { rejectedByName } = e.detail;
       console.log("[GamePage] Draw rejected by:", rejectedByName);
       setDrawOffer(null);
       showNotification(`${rejectedByName} đã từ chối lời đề nghị hòa`);
     };
-
+ 
     window.addEventListener("drawOffered", handleDrawOffered);
     window.addEventListener("drawOfferSent", handleDrawOfferSent);
     window.addEventListener("drawRejected", handleDrawRejected);
-
+ 
     return () => {
       window.removeEventListener("drawOffered", handleDrawOffered);
       window.removeEventListener("drawOfferSent", handleDrawOfferSent);
       window.removeEventListener("drawRejected", handleDrawRejected);
     };
   }, [gameState.gameId]);
-
-  // Join game khi vào page
+ 
   useEffect(() => {
     if (!gameId || !connected) {
       console.warn("[GAME_PAGE] No gameId in URL or not connected");
@@ -108,74 +98,35 @@ const GamePage = () => {
       }
     };
   }, [gameId, connected, joinGame, leaveGame]);
-
-  console.log("=== GAME PAGE RENDER ===");
-  console.log("gameState:", gameState);
-  console.log("isAI:", gameState.isAI);
-  console.log("aiThinking:", gameState.aiThinking);
-  console.log("connected:", connected);
-
-  // ✨ MỚI: Hàm show notification
+ 
   const showNotification = (message) => {
     setAINotification(message);
     setTimeout(() => setAINotification(null), 3000);
   };
-
-  // ✨ MỚI: Xác định ai là current player và opponent
+ 
   const isWhitePlayer = user?.id === gameState.white;
   const isBlackPlayer = user?.id === gameState.black;
-  const currentPlayerColor = gameState.turn;
-
-  // ✨ MỚI: Xác định opponent name
-  const getOpponentName = () => {
-    if (gameState.isAI) {
-      // AI game
-      if (isWhitePlayer) {
-        return "🤖 AI (Quân Đen)";
-      } else {
-        return "🤖 AI (Quân Trắng)";
-      }
-    } else {
-      // Human vs Human
-      const opponentId = isWhitePlayer ? gameState.black : gameState.white;
-      return `Player ${opponentId}`;
-    }
-  };
-
-  // ✨ MỚI: Kiểm tra xem player hiện tại có phải current player không
-  const isCurrentPlayerTurn =
-    (isWhitePlayer && gameState.turn === "white") ||
-    (isBlackPlayer && gameState.turn === "black");
-
-  // ✨ MỚI: Kiểm tra xem board có bị disable không
+ 
   const isBoardDisabled =
-    gameState.status !== "ongoing" ||
-    gameState.aiThinking || // Disable khi AI suy nghĩ
-    !isCurrentPlayerTurn; // Disable khi không phải lượt của player
-
-  // Chưa connect
+    gameState.status !== "ongoing" || gameState.aiThinking;
+ 
   if (!connected) {
     return <Loading />;
   }
-
-  // Chưa có game
+ 
   if (!gameState?.gameId) {
     return <Loading />;
   }
-
+ 
   const handleMove = (move) => {
-    // ✨ THÊM: Kiểm tra board có bị disable không
     if (isBoardDisabled) {
       console.log("[GamePage] Move blocked - board disabled");
       if (gameState.aiThinking) {
         showNotification("AI đang suy nghĩ, vui lòng chờ...");
-      } else if (!isCurrentPlayerTurn) {
-        showNotification("Không phải lượt của bạn");
       }
       return;
     }
-
-    // Kiểm tra xem có phải pawn promotion không
+ 
     console.log("MOVE:", move);
     console.log("BOARD:", gameState.board);
     if (isPromotionMove(move, gameState.board)) {
@@ -186,11 +137,10 @@ const GamePage = () => {
       });
       return;
     }
-
-    // Không phải promotion, send move ngay
+ 
     makeMove(move);
   };
-
+ 
   const handleCompletePromotion = (promotionPiece) => {
     if (!promotionData) {
       return;
@@ -201,49 +151,46 @@ const GamePage = () => {
       promotionPiece
     );
     console.log("[GamePage] Sending move:", moveWithPromotion);
-
+ 
     makeMove(moveWithPromotion);
     setPromotionData(null);
   };
-
+ 
   const handleResign = () => {
     const confirmed = window.confirm("Bạn chắc chắn muốn đầu hàng?");
     if (!confirmed) return;
-
+ 
     console.log("[GamePage] Resigning...");
     resign();
   };
-
+ 
   const handleOfferDraw = () => {
-    // ✨ MỚI: Trong AI mode, không cho phép offer draw (AI auto accept)
     if (gameState.isAI) {
       showNotification("AI sẽ tự động chấp nhận lời đề nghị hòa");
     }
     console.log("[GamePage] Offering draw...");
     offerDraw();
   };
-
+ 
   const handleAcceptDraw = () => {
     console.log("[GamePage] Accepting draw...");
     acceptDraw();
     setDrawOffer(null);
   };
-
+ 
   const handleRejectDraw = () => {
     console.log("[GamePage] Rejecting draw...");
     rejectDraw();
     setDrawOffer(null);
   };
-
+ 
   const handleLeave = () => {
     if (gameState.gameStatus !== "ongoing") {
-      // Game đã kết thúc, thoát luôn
       if (gameId) {
         leaveGame(parseInt(gameId));
       }
       navigate("/");
     } else {
-      // Game đang diễn ra, hỏi xác nhận
       const confirmed = window.confirm(
         "Nếu bạn thoát, bạn sẽ bị xem như đã đầu hàng. Tiếp tục?"
       );
@@ -256,236 +203,248 @@ const GamePage = () => {
       }
     }
   };
-
+ 
   return (
-    <div className="game-page">
-      {/* ✨ MỚI: AI Indicator */}
-      {gameState.isAI && (
-        <div className="ai-indicator-bar">
-          <span className="ai-badge">🤖 Chơi với AI</span>
-          {gameState.aiThinking && (
-            <span className="ai-thinking">
-              <span className="spinner"></span>
-              AI đang suy nghĩ...
-            </span>
+    <div className="game-page-wrapper">
+      {/* NAVBAR */}
+      <nav className="game-navbar">
+        <div className="navbar-content">
+          <div className="navbar-left">
+            <button
+              className="menu-toggle"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label="Toggle sidebar"
+            >
+              ☰
+            </button>
+            <h1 className="navbar-title">♟️ Chess Arena</h1>
+          </div>
+ 
+          {gameState.isAI && (
+            <div className="ai-indicator">
+              <span className="ai-badge">🤖 AI Mode</span>
+              {gameState.aiThinking && (
+                <span className="ai-thinking">
+                  <span className="pulse-dot"></span>
+                  AI đang suy nghĩ...
+                </span>
+              )}
+            </div>
           )}
+ 
+          <div className="navbar-right">
+            <span className="room-code">
+              Room: <strong>{gameState.roomCode || "—"}</strong>
+            </span>
+            <button
+              className="copy-btn"
+              onClick={() =>
+                gameState.roomCode &&
+                navigator.clipboard.writeText(gameState.roomCode)
+              }
+              title="Copy room code"
+            >
+              📋
+            </button>
+          </div>
         </div>
-      )}
-
-      {/* ✨ MỚI: Notification */}
+      </nav>
+ 
+      {/* NOTIFICATION */}
       {aiNotification && (
-        <div className="game-notification">
-          {aiNotification}
+        <div className="notification">
+          <p>{aiNotification}</p>
         </div>
       )}
-
+ 
+      {/* MAIN CONTAINER */}
       <div className="game-container">
         {/* LEFT: BOARD */}
-        <div className="game-board">
-          {/* ✨ MỚI: Overlay khi AI suy nghĩ hoặc không phải lượt */}
-          {isBoardDisabled && gameState.aiThinking && (
-            <div className="board-overlay ai-thinking">
-              <div className="overlay-content">
-                <span className="spinner-large"></span>
-                <p>🤖 AI đang suy nghĩ...</p>
-              </div>
-            </div>
-          )}
-
-          {isBoardDisabled && !gameState.aiThinking && !isCurrentPlayerTurn && (
-            <div className="board-overlay waiting">
-              <div className="overlay-content">
-                <p>⏳ Chờ lượt của bạn...</p>
-              </div>
-            </div>
-          )}
-
-          <Board
-            board={gameState.board}
-            currentTurn={gameState.turn}
-            status={gameState.status}
-            onMove={handleMove}
-            disabled={isBoardDisabled}
-          />
+        <div className="board-section">
+          <div className="board-wrapper">
+            <Board
+              board={gameState.board}
+              currentTurn={gameState.turn}
+              status={gameState.status}
+              onMove={handleMove}
+              disabled={isBoardDisabled}
+            />
+          </div>
         </div>
-
-        {/* RIGHT: INFO PANEL */}
-        <div className="game-sidebar">
-          {gameState.roomCode && (
-            <div className="room-box">
-              <p>Room Code:</p>
-              <h3>{gameState.roomCode}</h3>
-              <button
-                onClick={() =>
-                  navigator.clipboard.writeText(gameState.roomCode)
-                }
-              >
-                Copy
-              </button>
-            </div>
-          )}
-
-          {/* ✨ MỚI: Player Info Box (AI Mode) */}
-          {gameState.isAI && (
-            <div className="player-info-box ai-mode">
-              <div className="player-row white">
-                <span className="player-color">♟ Trắng</span>
-                <span className="player-name">
-                  {isWhitePlayer ? "👤 Bạn" : "🤖 AI"}
-                </span>
-                {gameState.turn === "white" && (
-                  <span className="turn-indicator">●</span>
-                )}
-              </div>
-              <div className="divider"></div>
-              <div className="player-row black">
-                <span className="player-color">♟ Đen</span>
-                <span className="player-name">
-                  {isBlackPlayer ? "👤 Bạn" : "🤖 AI"}
-                </span>
-                {gameState.turn === "black" && (
-                  <span className="turn-indicator">●</span>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* ✨ MỚI: Player Info Box (Human Mode) */}
-          {!gameState.isAI && (
-            <div className="player-info-box human-mode">
-              <div className="player-row white">
-                <span className="player-color">♟ Trắng</span>
-                <span className="player-name">
-                  {isWhitePlayer ? "👤 Bạn" : `Player ${gameState.white}`}
-                </span>
-                {gameState.turn === "white" && (
-                  <span className="turn-indicator">●</span>
-                )}
-              </div>
-              <div className="divider"></div>
-              <div className="player-row black">
-                <span className="player-color">♟ Đen</span>
-                <span className="player-name">
-                  {isBlackPlayer ? "👤 Bạn" : `Player ${gameState.black}`}
-                </span>
-                {gameState.turn === "black" && (
-                  <span className="turn-indicator">●</span>
-                )}
-              </div>
-            </div>
-          )}
-
-          <GameStatus
-            status={gameState.status}
-            currentTurn={gameState.turn}
-            players={{
-              white: gameState.white,
-              black: gameState.black,
-            }}
-            winner={gameState.winner}
-            checkmate={gameState.checkmate}
-            stalemate={gameState.stalemate}
-            check={gameState.check}
-            gameStatus={gameState.gameStatus}
-            reason={gameState.reason}
-            isAI={gameState.isAI} // ✨ MỚI: Pass AI flag
-          />
-
-          <MoveHistory moves={gameState.moves || []} />
-
-          {/* Game control buttons */}
-          {gameState.status === "ongoing" && (
-            <div className="game-controls">
-              <button
-                className="btn-resign"
-                onClick={handleResign}
-                title="Đầu hàng"
-                disabled={gameState.aiThinking}
-              >
-                🏳️ Đầu hàng
-              </button>
-              {!gameState.isAI && (
-                <button
-                  className="btn-draw"
-                  onClick={handleOfferDraw}
-                  title="Đề nghị hòa"
-                  disabled={gameState.aiThinking}
-                >
-                  🤝 Đề nghị hòa
-                </button>
-              )}
-              {gameState.isAI && (
-                <button
-                  className="btn-draw"
-                  onClick={handleOfferDraw}
-                  title="Đề nghị hòa (AI sẽ auto chấp nhận)"
-                  disabled={gameState.aiThinking}
-                >
-                  🤝 Đề nghị hòa
-                </button>
+ 
+        {/* RIGHT: SIDEBAR */}
+        <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
+          <div className="sidebar-content">
+            {/* PLAYER INFO */}
+            <div className="player-info-section">
+              <h3 className="section-title">Players</h3>
+              {gameState.isAI ? (
+                <div className="player-info-ai">
+                  <div className={`player-row white ${gameState.turn === "white" ? "active" : ""}`}>
+                    <span className="player-piece">♟</span>
+                    <div className="player-details">
+                      <span className="player-label">White</span>
+                      <span className="player-name">
+                        {isWhitePlayer ? "👤 You" : "🤖 AI"}
+                      </span>
+                    </div>
+                    {gameState.turn === "white" && <span className="turn-indicator">●</span>}
+                  </div>
+                  <div className="divider"></div>
+                  <div className={`player-row black ${gameState.turn === "black" ? "active" : ""}`}>
+                    <span className="player-piece">♟</span>
+                    <div className="player-details">
+                      <span className="player-label">Black</span>
+                      <span className="player-name">
+                        {isBlackPlayer ? "👤 You" : "🤖 AI"}
+                      </span>
+                    </div>
+                    {gameState.turn === "black" && <span className="turn-indicator">●</span>}
+                  </div>
+                </div>
+              ) : (
+                <div className="player-info-human">
+                  <div className={`player-row white ${gameState.turn === "white" ? "active" : ""}`}>
+                    <span className="player-piece">♟</span>
+                    <div className="player-details">
+                      <span className="player-label">White</span>
+                      <span className="player-name">
+                        {isWhitePlayer ? "👤 You" : `Player ${gameState.white}`}
+                      </span>
+                    </div>
+                    {gameState.turn === "white" && <span className="turn-indicator">●</span>}
+                  </div>
+                  <div className="divider"></div>
+                  <div className={`player-row black ${gameState.turn === "black" ? "active" : ""}`}>
+                    <span className="player-piece">♟</span>
+                    <div className="player-details">
+                      <span className="player-label">Black</span>
+                      <span className="player-name">
+                        {isBlackPlayer ? "👤 You" : `Player ${gameState.black}`}
+                      </span>
+                    </div>
+                    {gameState.turn === "black" && <span className="turn-indicator">●</span>}
+                  </div>
+                </div>
               )}
             </div>
-          )}
-
-          {/* Pawn promotion dialog */}
-          {promotionData && (
-            <div className="promotion-dialog">
-              <h4>Phong quân</h4>
-              <p>Chọn quân để nâng lên:</p>
-              <div className="promotion-options">
+ 
+            {/* GAME STATUS */}
+            <div className="game-status-section">
+              <GameStatus
+                status={gameState.status}
+                currentTurn={gameState.turn}
+                players={{
+                  white: gameState.white,
+                  black: gameState.black,
+                }}
+                winner={gameState.winner}
+                checkmate={gameState.checkmate}
+                stalemate={gameState.stalemate}
+                check={gameState.check}
+                gameStatus={gameState.gameStatus}
+                reason={gameState.reason}
+                isAI={gameState.isAI}
+              />
+            </div>
+ 
+            {/* MOVE HISTORY */}
+            <div className="move-history-section">
+              <h3 className="section-title">Moves</h3>
+              <MoveHistory moves={gameState.moves || []} />
+            </div>
+ 
+            {/* GAME CONTROLS */}
+            {gameState.status === "ongoing" && (
+              <div className="game-controls">
                 <button
-                  className="promotion-btn queen"
-                  onClick={() => handleCompletePromotion("Q")}
-                  title="Hậu"
+                  className="btn btn-resign"
+                  onClick={handleResign}
+                  disabled={gameState.aiThinking}
+                  title="Resign from the game"
                 >
-                  ♕ Hậu
+                  🏳️ Resign
                 </button>
                 <button
-                  className="promotion-btn rook"
-                  onClick={() => handleCompletePromotion("R")}
-                  title="Xe"
+                  className="btn btn-draw"
+                  onClick={handleOfferDraw}
+                  disabled={gameState.aiThinking}
+                  title={
+                    gameState.isAI
+                      ? "Offer draw (AI will auto-accept)"
+                      : "Offer draw"
+                  }
                 >
-                  ♖ Xe
-                </button>
-                <button
-                  className="promotion-btn bishop"
-                  onClick={() => handleCompletePromotion("B")}
-                  title="Tượng"
-                >
-                  ♗ Tượng
-                </button>
-                <button
-                  className="promotion-btn knight"
-                  onClick={() => handleCompletePromotion("N")}
-                  title="Mã"
-                >
-                  ♘ Mã
+                  🤝 Offer Draw
                 </button>
               </div>
-            </div>
-          )}
-
-          {/* Draw offer dialog */}
-          {drawOffer && (
-            <div className="draw-offer-dialog">
-              <h4>Đề nghị hòa</h4>
-              <p>{drawOffer.offeredByName} đề nghị hòa cả trò chơi</p>
-              <div className="dialog-actions">
-                <button className="btn-accept" onClick={handleAcceptDraw}>
-                  ✓ Chấp nhận
-                </button>
-                <button className="btn-reject" onClick={handleRejectDraw}>
-                  ✗ Từ chối
-                </button>
-              </div>
-            </div>
-          )}
-
-          <button className="leave-btn" onClick={handleLeave}>
-            Thoát Game
-          </button>
+            )}
+ 
+            {/* LEAVE BUTTON */}
+            <button className="btn btn-leave" onClick={handleLeave}>
+              👋 Leave Game
+            </button>
+          </div>
         </div>
       </div>
+ 
+      {/* PAWN PROMOTION DIALOG */}
+      {promotionData && (
+        <div className="modal-overlay">
+          <div className="promotion-dialog">
+            <h4>Pawn Promotion</h4>
+            <p>Choose a piece to promote to:</p>
+            <div className="promotion-options">
+              <button
+                className="promotion-btn queen"
+                onClick={() => handleCompletePromotion("Q")}
+                title="Queen"
+              >
+                ♕ Queen
+              </button>
+              <button
+                className="promotion-btn rook"
+                onClick={() => handleCompletePromotion("R")}
+                title="Rook"
+              >
+                ♖ Rook
+              </button>
+              <button
+                className="promotion-btn bishop"
+                onClick={() => handleCompletePromotion("B")}
+                title="Bishop"
+              >
+                ♗ Bishop
+              </button>
+              <button
+                className="promotion-btn knight"
+                onClick={() => handleCompletePromotion("N")}
+                title="Knight"
+              >
+                ♘ Knight
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+ 
+      {/* DRAW OFFER DIALOG */}
+      {drawOffer && (
+        <div className="modal-overlay">
+          <div className="draw-offer-dialog">
+            <h4>Draw Offer</h4>
+            <p>{drawOffer.offeredByName} offers a draw</p>
+            <div className="dialog-actions">
+              <button className="btn btn-accept" onClick={handleAcceptDraw}>
+                ✓ Accept
+              </button>
+              <button className="btn btn-reject" onClick={handleRejectDraw}>
+                ✗ Reject
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -104,7 +104,7 @@ const GameStatus = ({
     switch (reason) {
       case "checkmate":
         return (
-          <div className="game-end-reason checkmate">
+          <div>
             <strong>♔ Chiếu bí!</strong>
             {winner && (
               <p>
@@ -120,14 +120,14 @@ const GameStatus = ({
         );
       case "stalemate":
         return (
-          <div className="game-end-reason stalemate">
+          <div >
             <strong>♚ Hòa (Bế tắc)</strong>
             <p>Trò chơi hòa - Bất cứ bên nào cũng không có nước đi hợp lệ</p>
           </div>
         );
       case "resignation":
         return (
-          <div className="game-end-reason resignation">
+          <div >
             <strong>🏳️ Đầu hàng</strong>
             {winner && (
               <p>
@@ -143,7 +143,7 @@ const GameStatus = ({
         );
       case "draw_agreed":
         return (
-          <div className="game-end-reason draw">
+          <div >
             <strong>🤝 Đã hòa</strong>
             <p>Cả hai người chơi đã đồng ý hòa</p>
           </div>
@@ -167,9 +167,9 @@ const GameStatus = ({
 
     return (
       <div className={`turn ${isAITurn ? "ai-turn" : "human-turn"}`}>
-        <span className="turn-label">Lượt:</span>
-        <span className="turn-value">{turnColor}</span>
-        {isAITurn && <span className="ai-indicator">🤖</span>}
+        <span >Lượt:</span>
+        <span >{turnColor}</span>
+        {isAITurn && <span >🤖</span>}
       </div>
     );
   };
@@ -181,9 +181,9 @@ const GameStatus = ({
     }
 
     return (
-      <div className="check-indicator warning">
-        <span className="icon">⚠️</span>
-        <span className="text">Vua đang bị tấn công!</span>
+      <div >
+        <span >⚠️</span>
+        <span >Vua đang bị tấn công!</span>
       </div>
     );
   };
@@ -195,9 +195,9 @@ const GameStatus = ({
     }
 
     return (
-      <div className="checkmate-indicator critical">
-        <span className="icon">♔</span>
-        <span className="text">CHIẾU BÍ!</span>
+      <div >
+        <span >♔</span>
+        <span >CHIẾU BÍ!</span>
       </div>
     );
   };
@@ -209,9 +209,9 @@ const GameStatus = ({
     }
 
     return (
-      <div className="stalemate-indicator info">
-        <span className="icon">♚</span>
-        <span className="text">BẾ TẮC - HÒA</span>
+      <div >
+        <span >♚</span>
+        <span >BẾ TẮC - HÒA</span>
       </div>
     );
   };
@@ -223,9 +223,9 @@ const GameStatus = ({
     }
 
     return (
-      <div className="ai-thinking-indicator">
-        <span className="spinner"></span>
-        <span className="text">🤖 AI đang suy nghĩ...</span>
+      <div >
+        <span ></span>
+        <span >🤖 AI đang suy nghĩ...</span>
       </div>
     );
   };
@@ -243,9 +243,9 @@ const GameStatus = ({
       : `Player ${winner}`;
 
     return (
-      <div className="winner-section">
+      <div >
         <strong>👑 Người thắng:</strong>
-        <span className="winner-name">{winnerName}</span>
+        <span >{winnerName}</span>
       </div>
     );
   };
@@ -257,16 +257,16 @@ const GameStatus = ({
     }
 
     return (
-      <div className="player-info-ai">
-        <div className="player-row white">
-          <span className="player-color">⚪ Trắng</span>
-          <span className="player-name">{getPlayerName("white")}</span>
+      <div >
+        <div >
+          <span >⚪ Trắng</span>
+          <span >{getPlayerName("white")}</span>
           {currentTurn === "white" && <span className="turn-dot">●</span>}
         </div>
-        <div className="divider"></div>
-        <div className="player-row black">
-          <span className="player-color">⚫ Đen</span>
-          <span className="player-name">{getPlayerName("black")}</span>
+        <div ></div>
+        <div >
+          <span >⚫ Đen</span>
+          <span >{getPlayerName("black")}</span>
           {currentTurn === "black" && <span className="turn-dot">●</span>}
         </div>
       </div>
@@ -280,16 +280,16 @@ const GameStatus = ({
     }
 
     return (
-      <div className="players">
+      <div >
         <h4>Người chơi</h4>
-        <div className="player-list">
-          <div className="player-item white">
-            <span className="color-indicator">⚪</span>
-            <span className="username">{safePlayers.white?.username || "White"}</span>
+        <div >
+          <div >
+            <span >⚪</span>
+            <span >{safePlayers.white?.username || "White"}</span>
           </div>
-          <div className="player-item black">
-            <span className="color-indicator">⚫</span>
-            <span className="username">{safePlayers.black?.username || "Black"}</span>
+          <div >
+            <span >⚫</span>
+            <span >{safePlayers.black?.username || "Black"}</span>
           </div>
         </div>
       </div>
@@ -297,12 +297,12 @@ const GameStatus = ({
   };
 
   return (
-    <div className={`game-status ${isAI ? "ai-mode" : "human-mode"}`}>
-      <div className="status-header">
+    <div >
+      <div >
         <h3>Trạng thái game</h3>
         {/* ✨ MỚI: AI badge */}
         {isAI && (
-          <span className="ai-badge-mini">
+          <span >
             🤖 AI
           </span>
         )}
@@ -312,7 +312,7 @@ const GameStatus = ({
       {renderAIThinking()}
 
       {/* Main status */}
-      <div className="status-main">{renderStatus()}</div>
+      <div >{renderStatus()}</div>
 
       {/* Game ongoing - show turn */}
       {renderTurn()}

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { socketService } from "../../services/socket/socketService";
 import { useAuthLogic } from "../../hooks/useAuth";
-import "../../styles/room-create.css"; // styles bên dưới
+import "../../styles/roomcreate.css";
+
 
 const RoomCreate = () => {
     const navigate = useNavigate();
@@ -102,26 +103,22 @@ const RoomCreate = () => {
     return (
         <div className="room-create-container">
             <div className="room-create-card">
-                <h2>🎮 Tạo Phòng Chơi Cờ</h2>
+                <h2>🎮 Tạo Phòng Chơi</h2>
 
-                {error && (
-                    <div className="error-message">
-                        ❌ {error}
-                    </div>
-                )}
+                {error && <div className="error-alert">❌ {error}</div>}
 
                 {roomCode && mode === "human" && !loading && (
-                    <div className="room-code-message">
-                        ✅ Phòng đã tạo: <strong>{roomCode}</strong>
-                        <p className="subtitle">Chờ đối thủ join...</p>
+                    <div className="success-alert">
+                        ✅ Phòng đã sẵn sàng: <strong>{roomCode}</strong>
+                        <p style={{fontSize: '0.8rem', marginTop: '5px'}}>Đang đợi đối thủ tham gia...</p>
                     </div>
                 )}
 
-                {/* Chế độ chơi */}
+                {/* Lựa chọn Chế độ chơi */}
                 <div className="form-group">
-                    <label className="form-label">Chế độ chơi:</label>
-                    <div className="radio-group">
-                        <label className="radio-option">
+                    <label className="section-label">Chế độ chơi:</label>
+                    <div className="options-group">
+                        <label className="option-item">
                             <input
                                 type="radio"
                                 value="human"
@@ -129,13 +126,15 @@ const RoomCreate = () => {
                                 onChange={(e) => {
                                     setMode(e.target.value);
                                     setRoomCode(null);
-                                    setError(null);
                                 }}
                                 disabled={loading}
                             />
-                            <span className="radio-label">👥 Người với Người</span>
+                            <div className="option-content">
+                                <span>👥</span>
+                                <strong>Người</strong>
+                            </div>
                         </label>
-                        <label className="radio-option">
+                        <label className="option-item">
                             <input
                                 type="radio"
                                 value="ai"
@@ -143,20 +142,22 @@ const RoomCreate = () => {
                                 onChange={(e) => {
                                     setMode(e.target.value);
                                     setRoomCode(null);
-                                    setError(null);
                                 }}
                                 disabled={loading}
                             />
-                            <span className="radio-label">🤖 Người với Máy</span>
+                            <div className="option-content">
+                                <span>🤖</span>
+                                <strong>Máy (AI)</strong>
+                            </div>
                         </label>
                     </div>
                 </div>
 
-                {/* Lựa chọn màu */}
+                {/* Lựa chọn Màu quân */}
                 <div className="form-group">
-                    <label className="form-label">Chọn màu quân:</label>
-                    <div className="color-group">
-                        <label className="color-option white">
+                    <label className="section-label">Chọn phe của bạn:</label>
+                    <div className="options-group">
+                        <label className="option-item">
                             <input
                                 type="radio"
                                 value="white"
@@ -164,9 +165,12 @@ const RoomCreate = () => {
                                 onChange={(e) => setColor(e.target.value)}
                                 disabled={loading}
                             />
-                            <span className="color-label">♟️ Quân Trắng</span>
+                            <div className="option-content">
+                                <span>⚪</span>
+                                <strong>Quân Trắng</strong>
+                            </div>
                         </label>
-                        <label className="color-option black">
+                        <label className="option-item">
                             <input
                                 type="radio"
                                 value="black"
@@ -174,43 +178,36 @@ const RoomCreate = () => {
                                 onChange={(e) => setColor(e.target.value)}
                                 disabled={loading}
                             />
-                            <span className="color-label">♟️ Quân Đen</span>
+                            <div className="option-content">
+                                <span>⚫</span>
+                                <strong>Quân Đen</strong>
+                            </div>
                         </label>
                     </div>
                 </div>
 
-                {/* Thông tin chế độ */}
-                <div className="mode-info">
+                {/* Box thông tin */}
+                <div className="info-box">
                     {mode === "human" ? (
-                        <p>
-                            📱 Chia sẻ mã phòng với đối thủ để họ có thể tham gia
-                        </p>
+                        <p>📱 Gửi mã phòng cho bạn bè để bắt đầu trận đấu 1vs1.</p>
                     ) : (
-                        <p>
-                            🤖 Bạn sẽ chơi với máy tính AI
-                        </p>
+                        <p>🤖 Bạn sẽ đấu với AI. Trận đấu sẽ bắt đầu ngay sau khi tạo.</p>
                     )}
                 </div>
 
-                {/* Nút tạo phòng */}
+                {/* Nút thao tác */}
                 <button
-                    className={`btn-create ${loading ? 'loading' : ''}`}
+                    className="btn-create"
                     onClick={handleCreateRoom}
                     disabled={loading}
                 >
                     {loading ? (
-                        <>
-                            <span className="spinner"></span>
-                            Đang tạo phòng...
-                        </>
+                        <><div className="spinner"></div> Đang tạo...</>
                     ) : (
-                        <>
-                            🚀 {mode === "ai" ? "Chơi với Máy" : "Tạo phòng & Chờ đối thủ"}
-                        </>
+                        <>🚀 {mode === "ai" ? "Bắt đầu chơi AI" : "Tạo phòng chờ"}</>
                     )}
                 </button>
 
-                {/* Copy room code */}
                 {roomCode && mode === "human" && !loading && (
                     <button
                         className="btn-copy"
@@ -219,7 +216,7 @@ const RoomCreate = () => {
                             alert("Đã copy mã phòng!");
                         }}
                     >
-                        📋 Copy mã phòng
+                        📋 Copy mã phòng gửi bạn bè
                     </button>
                 )}
             </div>

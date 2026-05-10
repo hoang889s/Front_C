@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import "../../styles/register.css";
 
 const RegisterForm = () => {
     const { register, loading } = useAuth();
@@ -71,57 +72,63 @@ const RegisterForm = () => {
     };
 
     return (
-        <div style={{ maxWidth: 400, margin: "0 auto" }}>
-            <h2>Register</h2>
+        <div className="register-container">
+            <div className="register-card">
+                <h2>Tạo tài khoản</h2>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username</label>
-                    <input
-                        type="text"
-                        name="username"
-                        value={form.username}
-                        onChange={handleChange}
-                    />
-                </div>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Tên người dùng</label>
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="Nhập username..."
+                            value={form.username}
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <div>
-                    <label>Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={form.email}
-                        onChange={handleChange}
-                    />
-                </div>
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="example@gmail.com"
+                            value={form.email}
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <div>
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        name="password"
-                        value={form.password}
-                        onChange={handleChange}
-                    />
-                </div>
+                    <div className="form-group">
+                        <label>Mật khẩu</label>
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="••••••••"
+                            value={form.password}
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <div>
-                    <label>Confirm Password</label>
-                    <input
-                        type="password"
-                        name="confirmPassword"
-                        value={form.confirmPassword}
-                        onChange={handleChange}
-                    />
-                </div>
+                    <div className="form-group">
+                        <label>Xác nhận mật khẩu</label>
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            placeholder="••••••••"
+                            value={form.confirmPassword}
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <button type="submit" disabled={loading}>
-                    {loading ? "Loading..." : "Register"}
-                </button>
-            </form>
+                    <button className="register-btn" type="submit" disabled={loading}>
+                        {loading ? "Đang xử lý..." : "Đăng Ký Ngay"}
+                    </button>
+                </form>
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {success && <p style={{ color: "green" }}>{success}</p>}
+                {error && <div className="msg msg-error">{error}</div>}
+                {success && <div className="msg msg-success">{success}</div>}
+            </div>
         </div>
     );
 };

@@ -1,96 +1,224 @@
-.board {
-  display: grid;
-  grid-template-columns: repeat(8, 60px);
-  grid-template-rows: repeat(8, 60px);
-  border: 2px solid #333;
+/* ============================================
+   CHESS BOARD STYLING
+   Light: #cebfa0 (warm beige)
+   Dark:  #a9947b (warm brown)
+   ============================================ */
+
+:root {
+  --board-light: #cebfa0;
+  --board-dark: #a9947b;
+  --board-selected: #f0e68c;
+  --board-selected-alpha: rgba(240, 230, 140, 0.5);
+  --board-disabled-alpha: rgba(0, 0, 0, 0.3);
+  --transition-speed: 0.2s;
 }
 
+/* ============================================
+   BOARD CONTAINER
+   ============================================ */
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  gap: 0;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 1;
+  background-color: var(--board-dark);
+  border: 3px solid #8b7355;
+  border-radius: 4px;
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  margin: 20px 0;
+  padding: 0;
+  overflow: hidden;
+  cursor: grab;
+  transition: opacity var(--transition-speed) ease;
+}
+
+.board.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================
+   INDIVIDUAL SQUARES
+   ============================================ */
+
 .square {
+  aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  position: relative;
+  transition: 
+    background-color var(--transition-speed) ease,
+    box-shadow var(--transition-speed) ease,
+    transform 0.1s ease;
+  user-select: none;
+  background-color: var(--board-light);
+  border: none;
 }
 
-.light {
-  background-color: #f0d9b5;
+.square.dark {
+  background-color: var(--board-dark);
 }
 
-.dark {
-  background-color: #b58863;
+.square.light {
+  background-color: var(--board-light);
 }
 
-.selected {
-  outline: 3px solid yellow;
+/* ============================================
+   SQUARE HOVER & SELECTION EFFECTS
+   ============================================ */
+
+.square:not(.disabled):hover {
+  transform: scale(0.98);
 }
 
-.board-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.square.selected {
+  background-color: var(--board-selected);
+  box-shadow: inset 0 0 8px var(--board-selected-alpha);
+  position: relative;
+  z-index: 10;
 }
 
-.status {
-  margin-bottom: 10px;
-  font-size: 18px;
-}
-.piece {
-    font-size: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
+.square.selected::before {
+  content: "";
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  border: 2px solid #d4af37;
+  border-radius: 50%;
+  animation: pulse-ring 0.6s ease-out infinite;
 }
 
-.piece.white {
-    color: #fff;
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
 }
 
-.piece.black {
-    color: #000;
-}
-.move-history {
-    padding: 10px;
-}
-
-.move-list {
-    list-style: none;
-    padding: 0;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.move-item {
-    display: flex;
-    gap: 10px;
-    padding: 4px 0;
-}
-
-.move-index {
-    font-weight: bold;
-    width: 30px;
-}
-
-.move-text {
-    font-family: monospace;
-}
-.board.disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
- 
 .square.disabled {
+  background: linear-gradient(
+    135deg,
+    var(--board-light) 0%,
+    var(--board-dark) 100%
+  );
+  opacity: 0.7;
   cursor: not-allowed;
-  pointer-events: none;
 }
- 
-/* Hoặc thêm interactive feedback */
-.board:not(.disabled) .square:hover {
-  background-color: rgba(200, 200, 200, 0.3);
-  cursor: pointer;
+
+/* ============================================
+   TURN INDICATOR
+   ============================================ */
+
+.turn-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 16px;
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
 }
- 
-.board.disabled .square {
-  background-color: inherit;
+
+.turn-indicator strong {
+  font-size: 20px;
+  margin-left: 8px;
+  color: #a9947b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ============================================
+   PIECE STYLING (CONTAINER)
+   ============================================ */
+
+.piece {
+  width: 80%;
+  height: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: transform 0.2s ease;
+  cursor: grab;
+  user-select: none;
+}
+
+.piece:active {
+  transform: scale(0.95);
+  cursor: grabbing;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+  .board {
+    max-width: 90vw;
+    border-width: 2px;
+  }
+
+  .piece {
+    font-size: 36px;
+  }
+
+  .turn-indicator {
+    font-size: 16px;
+  }
+
+  .turn-indicator strong {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .board {
+    max-width: 100vw;
+  }
+
+  .piece {
+    font-size: 28px;
+  }
+
+  .turn-indicator {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .turn-indicator strong {
+    font-size: 16px;
+  }
+}
+
+/* ============================================
+   DARK MODE SUPPORT (Optional)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  .turn-indicator {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+  }
+
+  .turn-indicator strong {
+    color: #d4af37;
+  }
 }

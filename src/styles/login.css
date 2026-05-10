@@ -1,0 +1,97 @@
+/* Login.css */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px); /* Căn giữa theo chiều dọc trừ chiều cao navbar */
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.login-card {
+  background-color: #2C3947; /* Xanh than đậm */
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px; /* Nhỏ hơn form register một chút cho tinh tế */
+}
+
+.login-card h2 {
+  color: #cebfa0; /* Vàng cát nhạt */
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  color: #cebfa0;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 6px;
+  border: 1px solid #cebfa0;
+  background-color: rgba(206, 191, 160, 0.1);
+  color: #fff;
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  border-color: #ab937b;
+  background-color: rgba(206, 191, 160, 0.2);
+  box-shadow: 0 0 8px rgba(171, 147, 123, 0.4);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #ab937b; /* Nâu trung tính */
+  color: #2C3947;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.login-btn:hover:not(:disabled) {
+  background-color: #cebfa0;
+  transform: translateY(-2px);
+}
+
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  text-align: center;
+  padding: 10px;
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff6b6b;
+  border-radius: 4px;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Responsive cho điện thoại */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.5rem;
+  }
+}

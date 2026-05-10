@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 //import { useAuthLogic } from "../../hooks/useAuth";
 import { useAuth } from "../../context/AuthContext";
+import "../../styles/navbar.css";
 const Navbar = () => {
   const { token, logout } = useAuth();
   const handleLogout = async () =>{
@@ -18,14 +19,26 @@ const Navbar = () => {
     }
   };
   return (
-    <nav>
-      <Link to="/">Home</Link>
+    <nav className="navbar">
+      <div className="logo">
+        <Link to="/" className="nav-link" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+          MyApp
+        </Link>
+      </div>
 
-      {token ? (
-        <button onClick={handleLogout}>Logout</button>
-      ) : (
-        <Link to="/login">Login</Link>
-      )}
+      <div className="nav-links">
+        <Link title="Home" to="/" className="nav-link">Home</Link>
+
+        {token ? (
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        ) : (
+          <Link to="/login" className="nav-link">
+            Login
+          </Link>
+        )}
+      </div>
     </nav>
   );
 };

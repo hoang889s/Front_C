@@ -1,0 +1,144 @@
+/* RoomCreate.css */
+.room-create-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.room-create-card {
+  background-color: #2C3947;
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 500px;
+  color: #cebfa0;
+}
+
+.room-create-card h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #cebfa0;
+}
+
+.section-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #ab937b;
+  font-size: 1.1rem;
+}
+
+.options-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 2rem;
+}
+
+/* Biến Radio thành các Card lựa chọn */
+.option-item {
+  flex: 1;
+  cursor: pointer;
+  position: relative;
+}
+
+.option-item input {
+  display: none; /* Ẩn radio mặc định */
+}
+
+.option-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  background: rgba(206, 191, 160, 0.05);
+  border: 2px solid #ab937b;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.option-item input:checked + .option-content {
+  background-color: #ab937b;
+  color: #2C3947;
+}
+
+.option-item:hover .option-content {
+  background: rgba(171, 147, 123, 0.2);
+}
+
+.info-box {
+  background: rgba(206, 191, 160, 0.1);
+  padding: 15px;
+  border-left: 4px solid #ab937b;
+  border-radius: 4px;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+}
+
+.btn-create {
+  width: 100%;
+  padding: 15px;
+  background-color: #ab937b;
+  color: #2C3947;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-create:hover:not(:disabled) {
+  background-color: #cebfa0;
+  transform: translateY(-2px);
+}
+
+.btn-copy {
+  margin-top: 15px;
+  background: transparent;
+  border: 1px dashed #cebfa0;
+  color: #cebfa0;
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.success-alert {
+  background: rgba(81, 207, 102, 0.2);
+  color: #51cf66;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-alert {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Hiệu ứng loading đơn giản */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(44, 57, 71, 0.3);
+  border-radius: 50%;
+  border-top-color: #2C3947;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
