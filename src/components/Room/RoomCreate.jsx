@@ -3,7 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { socketService } from "../../services/socket/socketService";
 import { useAuthLogic } from "../../hooks/useAuth";
 import "../../styles/roomcreate.css";
-
+import "../../styles/css_icon.css";
+import   CircleIconBlack  from "../../assets/circle.svg?react";
+import IconUsers from "../../assets/users.svg?react";
+import IconComputer from  "../../assets/computer.svg?react";
+import IconCode from "../../assets/code.svg?react";
+import IconNew from "../../assets/new.svg?react";
+import IconGame from "../../assets/game.svg?react";
 
 const RoomCreate = () => {
     const navigate = useNavigate();
@@ -103,13 +109,18 @@ const RoomCreate = () => {
     return (
         <div className="room-create-container">
             <div className="room-create-card">
-                <h2>🎮 Tạo Phòng Chơi</h2>
+                <div className= "box-icon-h">
+                    <IconGame className="icongame"/>
+                    <div>
+                        <h2>Tạo Phòng Chơi</h2>
+                    </div>
+                </div>
 
                 {error && <div className="error-alert">❌ {error}</div>}
 
                 {roomCode && mode === "human" && !loading && (
                     <div className="success-alert">
-                        ✅ Phòng đã sẵn sàng: <strong>{roomCode}</strong>
+                         Phòng đã sẵn sàng: <strong>{roomCode}</strong>
                         <p style={{fontSize: '0.8rem', marginTop: '5px'}}>Đang đợi đối thủ tham gia...</p>
                     </div>
                 )}
@@ -130,7 +141,7 @@ const RoomCreate = () => {
                                 disabled={loading}
                             />
                             <div className="option-content">
-                                <span>👥</span>
+                                <span><IconUsers className="iconusers"/></span>
                                 <strong>Người</strong>
                             </div>
                         </label>
@@ -146,7 +157,7 @@ const RoomCreate = () => {
                                 disabled={loading}
                             />
                             <div className="option-content">
-                                <span>🤖</span>
+                                <span><IconComputer className="iconcomputer"/></span>
                                 <strong>Máy (AI)</strong>
                             </div>
                         </label>
@@ -166,7 +177,7 @@ const RoomCreate = () => {
                                 disabled={loading}
                             />
                             <div className="option-content">
-                                <span>⚪</span>
+                                <span><CircleIconBlack className="iconcirclew"/></span>
                                 <strong>Quân Trắng</strong>
                             </div>
                         </label>
@@ -179,7 +190,7 @@ const RoomCreate = () => {
                                 disabled={loading}
                             />
                             <div className="option-content">
-                                <span>⚫</span>
+                                <span><CircleIconBlack className="iconcircleb"/></span>
                                 <strong>Quân Đen</strong>
                             </div>
                         </label>
@@ -189,9 +200,21 @@ const RoomCreate = () => {
                 {/* Box thông tin */}
                 <div className="info-box">
                     {mode === "human" ? (
-                        <p>📱 Gửi mã phòng cho bạn bè để bắt đầu trận đấu 1vs1.</p>
+                        <div className= "box-icon">
+                            <div>
+                                <IconCode className="iconcode"/>
+                            </div>
+                            <div><p> Gửi mã phòng cho bạn bè để bắt đầu trận đấu 1vs1.</p></div>
+                            
+                        </div>
                     ) : (
-                        <p>🤖 Bạn sẽ đấu với AI. Trận đấu sẽ bắt đầu ngay sau khi tạo.</p>
+                        <div className= "box-icon">
+                            <div>
+                                <IconComputer className="iconnew"/>
+                            </div>
+                            <div><p> Bạn sẽ đấu với AI. Trận đấu sẽ bắt đầu ngay sau khi tạo.</p></div>
+                            
+                        </div>
                     )}
                 </div>
 
@@ -204,7 +227,7 @@ const RoomCreate = () => {
                     {loading ? (
                         <><div className="spinner"></div> Đang tạo...</>
                     ) : (
-                        <>🚀 {mode === "ai" ? "Bắt đầu chơi AI" : "Tạo phòng chờ"}</>
+                        <><IconNew className="iconnew"/> {mode === "ai" ? "Bắt đầu chơi AI" : "Tạo phòng chờ"}</>
                     )}
                 </button>
 

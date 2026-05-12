@@ -43,13 +43,13 @@ const GameStatus = ({
       if (color === "white") {
         return (
           <>
-            {players?.white === "AI" ? "🤖 AI" : `👤 ${player?.username || "White"}`}
+            {players?.white === "AI" ? " AI" : ` ${player?.username || "White"}`}
           </>
         );
       } else {
         return (
           <>
-            {players?.black === "AI" ? "🤖 AI" : `👤 ${player?.username || "Black"}`}
+            {players?.black === "AI" ? " AI" : ` ${player?.username || "Black"}`}
           </>
         );
       }
@@ -87,9 +87,9 @@ const GameStatus = ({
       case "stalemate":
         return "♚ Hòa (Bế tắc)";
       case "resignation":
-        return "🏳️ Đầu hàng";
+        return " Đầu hàng";
       case "draw_agreed":
-        return "🤝 Đã hòa";
+        return " Đã hòa";
       default:
         return `Kết thúc (${reason || gameStatus})`;
     }
@@ -128,7 +128,7 @@ const GameStatus = ({
       case "resignation":
         return (
           <div >
-            <strong>🏳️ Đầu hàng</strong>
+            <strong> Đầu hàng</strong>
             {winner && (
               <p>
                 Người thắng:{" "}
@@ -144,7 +144,7 @@ const GameStatus = ({
       case "draw_agreed":
         return (
           <div >
-            <strong>🤝 Đã hòa</strong>
+            <strong> Đã hòa</strong>
             <p>Cả hai người chơi đã đồng ý hòa</p>
           </div>
         );
@@ -169,7 +169,7 @@ const GameStatus = ({
       <div className={`turn ${isAITurn ? "ai-turn" : "human-turn"}`}>
         <span >Lượt:</span>
         <span >{turnColor}</span>
-        {isAITurn && <span >🤖</span>}
+        {isAITurn && <span ></span>}
       </div>
     );
   };
@@ -182,7 +182,7 @@ const GameStatus = ({
 
     return (
       <div >
-        <span >⚠️</span>
+        <span ></span>
         <span >Vua đang bị tấn công!</span>
       </div>
     );
@@ -225,7 +225,7 @@ const GameStatus = ({
     return (
       <div >
         <span ></span>
-        <span >🤖 AI đang suy nghĩ...</span>
+        <span > AI đang suy nghĩ...</span>
       </div>
     );
   };
@@ -244,7 +244,7 @@ const GameStatus = ({
 
     return (
       <div >
-        <strong>👑 Người thắng:</strong>
+        <strong> Người thắng:</strong>
         <span >{winnerName}</span>
       </div>
     );
@@ -303,7 +303,7 @@ const GameStatus = ({
         {/* ✨ MỚI: AI badge */}
         {isAI && (
           <span >
-            🤖 AI
+             AI
           </span>
         )}
       </div>

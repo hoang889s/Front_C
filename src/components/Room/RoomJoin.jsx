@@ -31,13 +31,13 @@ const RoomJoin = () => {
         const handleDisconnect = () => {
             console.log("[RoomJoin] Socket disconnected");
             setIsConnected(false);
-            setStatus("⏳ Mất kết nối");
+            setStatus(" Mất kết nối");
         };
 
         const handleRoomCreated = (data) => {
             console.log("[RoomJoin] Room created:", data);
             setRoomCode(data.room_code);
-            setStatus(`📋 Phòng tạo: ${data.room_code} - Chờ người chơi khác...`);
+            setStatus(` Phòng tạo: ${data.room_code} - Chờ người chơi khác...`);
             setIsLoading(false);
         };
 
@@ -46,12 +46,12 @@ const RoomJoin = () => {
             console.log("[RoomJoin] Room join response:", data.game_id);
             if (data.game_id) {
                 setGameId(data.game_id);
-                setStatus(`✅ Vào phòng thành công! Chuyển tới bàn cờ...`);
+                setStatus(` Vào phòng thành công! Chuyển tới bàn cờ...`);
                 setTimeout(() => {
                     navigate(`/game/${data.game_id}`);
                 }, 1500);
             } else {
-                setStatus(`⏳ Vào phòng thành công! Chờ người chơi thứ 2...`);
+                setStatus(` Vào phòng thành công! Chờ người chơi thứ 2...`);
             }
             setIsLoading(false);
         };
@@ -59,26 +59,26 @@ const RoomJoin = () => {
         const handleGameCreated = (data) => {
             console.log("[RoomJoin] Game created:", data);
             setGameId(data.game_id);
-            setStatus(`✅ Game tạo thành công! ID: ${data.game_id}`);
+            setStatus(` Game tạo thành công! ID: ${data.game_id}`);
         };
 
         const handleGameState = (data) => {
             console.log("[RoomJoin] Game state:", data);
             if (data.black) {
-                setStatus(`✅ Bàn cờ sẵn sàng! Chuyển tới game...`);
+                setStatus(` Bàn cờ sẵn sàng! Chuyển tới game...`);
                 setGameId(data.game_id);
                 setTimeout(() => {
                     navigate(`/game/${data.game_id}`);
                 }, 1000);
             } else {
-                setStatus(`⏳ Chờ người chơi thứ 2 join...`);
+                setStatus(` Chờ người chơi thứ 2 join...`);
             }
             setIsLoading(false);
         };
 
         const handleError = (err) => {
             console.error("[RoomJoin] Error:", err);
-            setStatus(`❌ Lỗi: ${err.message || "Có lỗi xảy ra"}`);
+            setStatus(` Lỗi: ${err.message || "Có lỗi xảy ra"}`);
             setIsLoading(false);
         };
 
@@ -106,11 +106,11 @@ const RoomJoin = () => {
     const handleCreateRoom = () => {
         const socket = socketService.getSocket();
         if (!socket?.connected) {
-            setStatus("⚠️ Socket chưa kết nối");
+            setStatus(" Socket chưa kết nối");
             return;
         }
         setIsLoading(true);
-        setStatus("📋 Đang tạo phòng...");
+        setStatus(" Đang tạo phòng...");
         socketService.emit("create_room", {
             name: "Chess Room",
             mode: "human",
@@ -119,16 +119,16 @@ const RoomJoin = () => {
 
     const handleJoinRoom = () => {
         if (!roomCode.trim()) {
-            setStatus("⚠️ Vui lòng nhập room code");
+            setStatus(" Vui lòng nhập room code");
             return;
         }
         const socket = socketService.getSocket();
         if (!socket?.connected) {
-            setStatus("⚠️ Socket chưa kết nối");
+            setStatus(" Socket chưa kết nối");
             return;
         }
         setIsLoading(true);
-        setStatus("🎮 Đang vào phòng...");
+        setStatus(" Đang vào phòng...");
         socketService.emit("join_room", {
             room_code: roomCode.toUpperCase(),
         });
@@ -149,12 +149,12 @@ const RoomJoin = () => {
                 fontWeight: "bold",
                 textAlign: "center",
             }}>
-                {isConnected ? "✓ Đã kết nối" : "⏳ Đang kết nối..."}
+                {isConnected ? "✓ Đã kết nối" : " Đang kết nối..."}
             </div>
 
             {/* Create Room Section */}
             <div style={{ marginBottom: 30 }}>
-                <h3 style={{ marginBottom: 15, color: "#333" }}>1️⃣ Tạo Phòng Mới</h3>
+                <h3 style={{ marginBottom: 15, color: "#333" }}>1️ Tạo Phòng Mới</h3>
                 <button
                     onClick={handleCreateRoom}
                     disabled={!isConnected || isLoading}
@@ -171,7 +171,7 @@ const RoomJoin = () => {
                         opacity: isConnected && !isLoading ? 1 : 0.6,
                     }}
                 >
-                    {isLoading ? "⏳ Đang tạo..." : "📋 Tạo Phòng"}
+                    {isLoading ? " Đang tạo..." : " Tạo Phòng"}
                 </button>
             </div>
 
@@ -188,7 +188,7 @@ const RoomJoin = () => {
 
             {/* Join Room Section */}
             <div style={{ marginBottom: 30 }}>
-                <h3 style={{ marginBottom: 15, color: "#333" }}>2️⃣ Vào Phòng Có Sẵn</h3>
+                <h3 style={{ marginBottom: 15, color: "#333" }}>2️ Vào Phòng Có Sẵn</h3>
                 <input
                     type="text"
                     placeholder="Nhập room code (VD: ABC123)"
@@ -223,7 +223,7 @@ const RoomJoin = () => {
                         opacity: isConnected && !isLoading && roomCode.trim() ? 1 : 0.6,
                     }}
                 >
-                    {isLoading ? "⏳ Đang vào..." : "🎮 Vào Phòng"}
+                    {isLoading ? " Đang vào..." : " Vào Phòng"}
                 </button>
             </div>
 

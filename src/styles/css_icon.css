@@ -1,0 +1,60 @@
+.iconcircleb {
+    width: 24px;
+    height: 24px;
+    color:black
+    
+}
+.option-item input:checked + .option-content .iconcircleb{
+    color: #2C3947;
+}
+.iconcirclew {
+    width: 24px;
+    height: 24px;
+    color: #fff;
+}
+
+.option-item input:checked + .option-content .iconcirclew{
+    color: #2C3947;
+}
+.iconusers{
+    width: 24px;
+    height: 24px;
+}
+.option-item input:checked + .option-content .iconusers{
+    color: #2C3947;
+}
+.iconcomputer{
+    width: 24px;
+    height: 24px;
+}
+.option-item input:checked + .option-content .iconcomputer{
+    color: #2C3947;
+}
+.iconcomputer input:checked + .option-content {
+  background-color: #ab937b;
+  color: #2C3947;
+}
+.iconcode{
+    width: 20px;
+    height: 20px;
+}
+.box-icon{
+    display: flex;
+    
+}
+.iconnew{
+    width: 20px;
+    height: 20px;
+}
+.icongame{
+    width: 28px;
+    height: 28px;
+}
+.box-icon-h{
+    display: flex;
+    justify-content: center;
+}
+.iconexit{
+    width: 16px;
+    height: 16px;
+}

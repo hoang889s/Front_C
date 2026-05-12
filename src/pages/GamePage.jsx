@@ -12,6 +12,11 @@ import Loading from "../components/Common/Loading";
 import { isPromotionMove, createPromotionMove } from "../utils/Promotionutils";
 
 import "../styles/game-page.css";
+import "../styles/css_icon.css";
+import IconCopy from "../assets/copy.svg?react";
+import Iconexit from "../assets/exit.svg?react";
+import IconHand from "../assets/hand.svg?react";
+import IconFlag from "../assets/flag.svg?react";
 const GamePage = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
@@ -222,7 +227,7 @@ const GamePage = () => {
  
           {gameState.isAI && (
             <div className="ai-indicator">
-              <span className="ai-badge">🤖 AI Mode</span>
+              <span className="ai-badge"> AI Mode</span>
               {gameState.aiThinking && (
                 <span className="ai-thinking">
                   <span className="pulse-dot"></span>
@@ -244,7 +249,7 @@ const GamePage = () => {
               }
               title="Copy room code"
             >
-              📋
+              <IconCopy className="iconcomputer" />
             </button>
           </div>
         </div>
@@ -285,7 +290,7 @@ const GamePage = () => {
                     <div className="player-details">
                       <span className="player-label">White</span>
                       <span className="player-name">
-                        {isWhitePlayer ? "👤 You" : "🤖 AI"}
+                        {isWhitePlayer ? " You" : " AI"}
                       </span>
                     </div>
                     {gameState.turn === "white" && <span className="turn-indicator">●</span>}
@@ -296,7 +301,7 @@ const GamePage = () => {
                     <div className="player-details">
                       <span className="player-label">Black</span>
                       <span className="player-name">
-                        {isBlackPlayer ? "👤 You" : "🤖 AI"}
+                        {isBlackPlayer ? " You" : " AI"}
                       </span>
                     </div>
                     {gameState.turn === "black" && <span className="turn-indicator">●</span>}
@@ -309,7 +314,7 @@ const GamePage = () => {
                     <div className="player-details">
                       <span className="player-label">White</span>
                       <span className="player-name">
-                        {isWhitePlayer ? "👤 You" : `Player ${gameState.white}`}
+                        {isWhitePlayer ? " You" : `Player ${gameState.white}`}
                       </span>
                     </div>
                     {gameState.turn === "white" && <span className="turn-indicator">●</span>}
@@ -320,7 +325,7 @@ const GamePage = () => {
                     <div className="player-details">
                       <span className="player-label">Black</span>
                       <span className="player-name">
-                        {isBlackPlayer ? "👤 You" : `Player ${gameState.black}`}
+                        {isBlackPlayer ? " You" : `Player ${gameState.black}`}
                       </span>
                     </div>
                     {gameState.turn === "black" && <span className="turn-indicator">●</span>}
@@ -363,7 +368,14 @@ const GamePage = () => {
                   disabled={gameState.aiThinking}
                   title="Resign from the game"
                 >
-                  🏳️ Resign
+                 <div className="box-icon">
+                    <div>
+                      <IconFlag className="iconexit"/>
+                    </div>
+                    <div>
+                       <p>Resign</p>
+                    </div>
+                 </div>
                 </button>
                 <button
                   className="btn btn-draw"
@@ -375,14 +387,26 @@ const GamePage = () => {
                       : "Offer draw"
                   }
                 >
-                  🤝 Offer Draw
+                  <div className="box-icon">
+                    <div><IconHand className="iconexit"/></div>
+                    <div>
+                      <p> Offer Draw</p>
+                    </div>
+                  </div>
                 </button>
               </div>
             )}
  
             {/* LEAVE BUTTON */}
             <button className="btn btn-leave" onClick={handleLeave}>
-              👋 Leave Game
+              <div className="box-icon">
+                <div>
+                  <Iconexit className="iconexit" />
+                </div>
+                <div>
+                  <p>Leave game</p>
+                </div>
+              </div>
             </button>
           </div>
         </div>
