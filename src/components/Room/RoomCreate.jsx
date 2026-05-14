@@ -18,9 +18,41 @@ const RoomCreate = () => {
     // State management
     const [mode, setMode] = useState("human"); // "human" hoặc "ai"
     const [color, setColor] = useState("white");
+    const [aiDifficulty, setAiDifficulty] = useState("medium");
     const [roomCode, setRoomCode] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const difficultyOptions = [
+        {
+            value: "easy",
+            label: "Easy (Beginner)",
+            description: "AI dễ bị đánh bại",
+            depth: "depth=2",
+            icon: "♙",
+        },
+        {
+            value: "medium",
+            label: "Medium (Intermediate)",
+            description: "Cân bằng - thích hợp chơi thường",
+            depth: "depth=4",
+            icon: "♘",
+        },
+        {
+            value: "hard",
+            label: "Hard (Advanced)",
+            description: "AI chơi khá tốt - thách thức",
+            depth: "depth=6",
+            icon: "♖",
+        },
+        {
+            value: "expert",
+            label: "Expert (Master)",
+            description: "AI chơi rất giỏi - cực kỳ khó",
+            depth: "depth=8",
+            icon: "♛",
+        } 
+    ];
 
     useEffect(() => {
         if (!token) {
@@ -68,6 +100,7 @@ const RoomCreate = () => {
         const handleGameState = (data) => {
             console.log("[RoomCreate] Game state received:", data);
             // Game đã sẵn sàng
+            console.log("[RoomCreate] AI Difficulty from game_state:", data.ai_difficulty);
         };
 
         // Event: Lỗi
@@ -90,7 +123,7 @@ const RoomCreate = () => {
             socketService.off("game_state", handleGameState);
             socketService.off("error", handleError);
         };
-    }, [token, navigate, mode]);
+    }, [token, navigate, mode, aiDifficulty]);
 
     const handleCreateRoom = () => {
         if (loading) return;
@@ -98,153 +131,226 @@ const RoomCreate = () => {
         setLoading(true);
         setError(null);
 
-        console.log(`[RoomCreate] Creating room - Mode: ${mode}, Color: ${color}`);
+        console.log(`[RoomCreate] Creating room - Mode: ${mode}, Color: ${color}, Difficulty: ${aiDifficulty}`);
         
         socketService.emit("create_room", {
             color: color,
-            mode: mode // Truyền mode lên backend
+            mode: mode, // Truyền mode lên backend
+            ai_difficulty: aiDifficulty // Truyền độ khó AI lên backend
         });
     };
 
     return (
-        <div className="room-create-container">
-            <div className="room-create-card">
-                <div className= "box-icon-h">
-                    <IconGame className="icongame"/>
-                    <div>
-                        <h2>Tạo Phòng Chơi</h2>
-                    </div>
-                </div>
-
-                {error && <div className="error-alert">❌ {error}</div>}
-
-                {roomCode && mode === "human" && !loading && (
-                    <div className="success-alert">
-                         Phòng đã sẵn sàng: <strong>{roomCode}</strong>
-                        <p style={{fontSize: '0.8rem', marginTop: '5px'}}>Đang đợi đối thủ tham gia...</p>
-                    </div>
-                )}
-
-                {/* Lựa chọn Chế độ chơi */}
-                <div className="form-group">
-                    <label className="section-label">Chế độ chơi:</label>
-                    <div className="options-group">
-                        <label className="option-item">
-                            <input
-                                type="radio"
-                                value="human"
-                                checked={mode === "human"}
-                                onChange={(e) => {
-                                    setMode(e.target.value);
-                                    setRoomCode(null);
-                                }}
-                                disabled={loading}
-                            />
-                            <div className="option-content">
-                                <span><IconUsers className="iconusers"/></span>
-                                <strong>Người</strong>
-                            </div>
-                        </label>
-                        <label className="option-item">
-                            <input
-                                type="radio"
-                                value="ai"
-                                checked={mode === "ai"}
-                                onChange={(e) => {
-                                    setMode(e.target.value);
-                                    setRoomCode(null);
-                                }}
-                                disabled={loading}
-                            />
-                            <div className="option-content">
-                                <span><IconComputer className="iconcomputer"/></span>
-                                <strong>Máy (AI)</strong>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                {/* Lựa chọn Màu quân */}
-                <div className="form-group">
-                    <label className="section-label">Chọn phe của bạn:</label>
-                    <div className="options-group">
-                        <label className="option-item">
-                            <input
-                                type="radio"
-                                value="white"
-                                checked={color === "white"}
-                                onChange={(e) => setColor(e.target.value)}
-                                disabled={loading}
-                            />
-                            <div className="option-content">
-                                <span><CircleIconBlack className="iconcirclew"/></span>
-                                <strong>Quân Trắng</strong>
-                            </div>
-                        </label>
-                        <label className="option-item">
-                            <input
-                                type="radio"
-                                value="black"
-                                checked={color === "black"}
-                                onChange={(e) => setColor(e.target.value)}
-                                disabled={loading}
-                            />
-                            <div className="option-content">
-                                <span><CircleIconBlack className="iconcircleb"/></span>
-                                <strong>Quân Đen</strong>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                {/* Box thông tin */}
-                <div className="info-box">
-                    {mode === "human" ? (
-                        <div className= "box-icon">
-                            <div>
-                                <IconCode className="iconcode"/>
-                            </div>
-                            <div><p> Gửi mã phòng cho bạn bè để bắt đầu trận đấu 1vs1.</p></div>
-                            
-                        </div>
-                    ) : (
-                        <div className= "box-icon">
-                            <div>
-                                <IconComputer className="iconnew"/>
-                            </div>
-                            <div><p> Bạn sẽ đấu với AI. Trận đấu sẽ bắt đầu ngay sau khi tạo.</p></div>
-                            
-                        </div>
-                    )}
-                </div>
-
-                {/* Nút thao tác */}
-                <button
-                    className="btn-create"
-                    onClick={handleCreateRoom}
-                    disabled={loading}
-                >
-                    {loading ? (
-                        <><div className="spinner"></div> Đang tạo...</>
-                    ) : (
-                        <><IconNew className="iconnew"/> {mode === "ai" ? "Bắt đầu chơi AI" : "Tạo phòng chờ"}</>
-                    )}
-                </button>
-
-                {roomCode && mode === "human" && !loading && (
-                    <button
-                        className="btn-copy"
-                        onClick={() => {
-                            navigator.clipboard.writeText(roomCode);
-                            alert("Đã copy mã phòng!");
-                        }}
-                    >
-                        📋 Copy mã phòng gửi bạn bè
-                    </button>
-                )}
-            </div>
+    <div className="room-create-container">
+      <div className="room-create-card">
+        <div className="box-icon-h">
+          <IconGame className="icongame" />
+          <div>
+            <h2>Tạo Phòng Chơi</h2>
+          </div>
         </div>
-    );
+ 
+        {error && <div className="error-alert">❌ {error}</div>}
+ 
+        {roomCode && mode === "human" && !loading && (
+          <div className="success-alert">
+            Phòng đã sẵn sàng: <strong>{roomCode}</strong>
+            <p style={{ fontSize: "0.8rem", marginTop: "5px" }}>
+              Đang đợi đối thủ tham gia...
+            </p>
+          </div>
+        )}
+ 
+        {/* ========================================
+            Lựa chọn Chế độ chơi
+            ======================================== */}
+        <div className="form-group">
+          <label className="section-label">Chế độ chơi:</label>
+          <div className="options-group">
+            <label className="option-item">
+              <input
+                type="radio"
+                value="human"
+                checked={mode === "human"}
+                onChange={(e) => {
+                  setMode(e.target.value);
+                  setRoomCode(null);
+                }}
+                disabled={loading}
+              />
+              <div className="option-content">
+                <span>
+                  <IconUsers className="iconusers" />
+                </span>
+                <strong>Người</strong>
+              </div>
+            </label>
+            <label className="option-item">
+              <input
+                type="radio"
+                value="ai"
+                checked={mode === "ai"}
+                onChange={(e) => {
+                  setMode(e.target.value);
+                  setRoomCode(null);
+                }}
+                disabled={loading}
+              />
+              <div className="option-content">
+                <span>
+                  <IconComputer className="iconcomputer" />
+                </span>
+                <strong>Máy (AI)</strong>
+              </div>
+            </label>
+          </div>
+        </div>
+ 
+        {/* ========================================
+            Lựa chọn độ khó AI (chỉ hiển thị khi mode = "ai")
+            ======================================== */}
+        {mode === "ai" && (
+          <div className="form-group">
+            <label className="section-label">Chọn độ khó:</label>
+            <div className="difficulty-options">
+              {difficultyOptions.map((option) => (
+                <label
+                  key={option.value}
+                  className={`difficulty-item ${
+                    aiDifficulty === option.value ? "selected" : ""
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    value={option.value}
+                    checked={aiDifficulty === option.value}
+                    onChange={(e) => setAiDifficulty(e.target.value)}
+                    disabled={loading}
+                    className="difficulty-radio"
+                  />
+                  <div className="difficulty-content">
+                    <div className="difficulty-header">
+                      <span className="difficulty-icon">{option.icon}</span>
+                      <strong className="difficulty-label">
+                        {option.label}
+                      </strong>
+                    </div>
+                    <p className="difficulty-description">
+                      {option.description}
+                    </p>
+                    <span className="difficulty-depth">{option.depth}</span>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+ 
+        {/* ========================================
+            Lựa chọn Màu quân
+            ======================================== */}
+        <div className="form-group">
+          <label className="section-label">Chọn phe của bạn:</label>
+          <div className="options-group">
+            <label className="option-item">
+              <input
+                type="radio"
+                value="white"
+                checked={color === "white"}
+                onChange={(e) => setColor(e.target.value)}
+                disabled={loading}
+              />
+              <div className="option-content">
+                <span>
+                  <CircleIconBlack className="iconcirclew" />
+                </span>
+                <strong>Quân Trắng</strong>
+              </div>
+            </label>
+            <label className="option-item">
+              <input
+                type="radio"
+                value="black"
+                checked={color === "black"}
+                onChange={(e) => setColor(e.target.value)}
+                disabled={loading}
+              />
+              <div className="option-content">
+                <span>
+                  <CircleIconBlack className="iconcircleb" />
+                </span>
+                <strong>Quân Đen</strong>
+              </div>
+            </label>
+          </div>
+        </div>
+ 
+        {/* ========================================
+            Box thông tin
+            ======================================== */}
+        <div className="info-box">
+          {mode === "human" ? (
+            <div className="box-icon">
+              <div>
+                <IconCode className="iconcode" />
+              </div>
+              <div>
+                <p>
+                  Gửi mã phòng cho bạn bè để bắt đầu trận đấu 1vs1.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="box-icon">
+              <div>
+                <IconComputer className="iconnew" />
+              </div>
+              <div>
+                <p>
+                  Bạn sẽ đấu với AI độ khó <strong>{aiDifficulty.toUpperCase()}</strong>.
+                  Trận đấu sẽ bắt đầu ngay sau khi tạo.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+ 
+        {/* ========================================
+            Nút thao tác
+            ======================================== */}
+        <button
+          className="btn-create"
+          onClick={handleCreateRoom}
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <div className="spinner"></div> Đang tạo...
+            </>
+          ) : (
+            <>
+              <IconNew className="iconnew" />{" "}
+              {mode === "ai"
+                ? `Bắt đầu chơi AI (${aiDifficulty})`
+                : "Tạo phòng chờ"}
+            </>
+          )}
+        </button>
+ 
+        {roomCode && mode === "human" && !loading && (
+          <button
+            className="btn-copy"
+            onClick={() => {
+              navigator.clipboard.writeText(roomCode);
+              alert("Đã copy mã phòng!");
+            }}
+          >
+             Copy mã phòng gửi bạn bè
+          </button>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default RoomCreate;

@@ -870,3 +870,205 @@ html, body {
     display: none;
   }
 }
+
+.ai-indicator {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 8px 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+}
+ 
+.ai-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+ 
+.ai-badge strong {
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+ 
+.ai-thinking {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #fff;
+  animation: fadeInOut 0.6s infinite;
+}
+ 
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+ 
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+ 
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+ 
+/* ========================================
+   AI INFO SECTION - SIDEBAR
+   ======================================== */
+ 
+.ai-info-section {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #e0e0e0;
+}
+ 
+.ai-info-section .section-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+ 
+.ai-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+ 
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+  font-size: 13px;
+}
+ 
+.info-row .label {
+  font-weight: 500;
+  color: #555;
+}
+ 
+/* Difficulty badge */
+.difficulty-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+ 
+.difficulty-badge.easy {
+  background: #d5f4e6;
+  color: #27ae60;
+}
+ 
+.difficulty-badge.medium {
+  background: #fdebd0;
+  color: #e67e22;
+}
+ 
+.difficulty-badge.hard {
+  background: #fadbd8;
+  color: #c0392b;
+}
+ 
+.difficulty-badge.expert {
+  background: #ebdef0;
+  color: #8e44ad;
+}
+ 
+/* Depth value */
+.depth-value {
+  display: inline-block;
+  min-width: 40px;
+  padding: 4px 10px;
+  background: #e8e8e8;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+  font-size: 12px;
+}
+ 
+/* Thinking state */
+.info-row.thinking {
+  justify-content: flex-start;
+  gap: 8px;
+  background: #fffacd;
+  border-left: 3px solid #f39c12;
+}
+ 
+.info-row.thinking .pulse-dot {
+  width: 6px;
+  height: 6px;
+  background: #f39c12;
+}
+ 
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+ 
+@media (max-width: 768px) {
+  .ai-indicator {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+ 
+  .ai-badge strong {
+    font-size: 11px;
+    padding: 2px 6px;
+  }
+ 
+  .ai-info-section {
+    padding: 12px;
+    margin-bottom: 15px;
+  }
+ 
+  .ai-info-section .section-title {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+ 
+  .info-row {
+    padding: 6px;
+    font-size: 12px;
+  }
+}
+ 

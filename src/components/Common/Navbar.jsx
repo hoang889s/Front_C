@@ -22,7 +22,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="logo">
         <Link to="/" className="nav-link" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-          MyApp
+          CHESS GAME
         </Link>
       </div>
 

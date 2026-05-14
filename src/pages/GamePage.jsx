@@ -13,6 +13,7 @@ import { isPromotionMove, createPromotionMove } from "../utils/Promotionutils";
 
 import "../styles/game-page.css";
 import "../styles/css_icon.css";
+import "../styles/difficulty.css";
 import IconCopy from "../assets/copy.svg?react";
 import Iconexit from "../assets/exit.svg?react";
 import IconHand from "../assets/hand.svg?react";
@@ -208,6 +209,25 @@ const GamePage = () => {
       }
     }
   };
+  const getDifficultyIcon = (difficulty) => {
+    const icons = {
+      easy: "♙",
+      medium: "♘",
+      hard: "♖",
+      expert: "♛",
+    };
+    return icons[difficulty] || "⚔️";
+  };
+ 
+  const getDepthValue = (difficulty) => {
+    const depths = {
+      easy: 2,
+      medium: 4,
+      hard: 6,
+      expert: 8
+    };
+    return depths[difficulty] || 4;
+  };
  
   return (
     <div className="game-page-wrapper">
@@ -227,7 +247,7 @@ const GamePage = () => {
  
           {gameState.isAI && (
             <div className="ai-indicator">
-              <span className="ai-badge"> AI Mode</span>
+              <span className="ai-badge"> AI Mode - <strong>{gameState.aiDifficulty?.toUpperCase() || "MEDIUM"}</strong></span>
               {gameState.aiThinking && (
                 <span className="ai-thinking">
                   <span className="pulse-dot"></span>

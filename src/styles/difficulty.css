@@ -1,0 +1,176 @@
+/* Thêm vào roomcreate.css hoặc tạo file difficulty.css */
+
+/* ========================================
+   DIFFICULTY OPTIONS STYLING
+   ======================================== */
+
+.difficulty-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.difficulty-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f9f9f9;
+}
+
+.difficulty-item:hover {
+  border-color: #4a90e2;
+  background: #f0f4ff;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.15);
+}
+
+/* Khi được chọn */
+.difficulty-item.selected {
+  border-color: #4a90e2;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 100%);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.25);
+}
+
+/* Radio input - ẩn mặc định */
+.difficulty-radio {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d0d0d0;
+  border-radius: 50%;
+  margin-right: 15px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.difficulty-radio:hover {
+  border-color: #4a90e2;
+  box-shadow: 0 0 4px rgba(74, 144, 226, 0.3);
+}
+
+.difficulty-radio:checked {
+  background: #4a90e2;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+}
+
+/* Content area */
+.difficulty-content {
+  flex: 1;
+}
+
+.difficulty-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.difficulty-icon {
+  font-size: 24px;
+  display: inline-block;
+}
+
+.difficulty-label {
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+}
+
+.difficulty-description {
+  font-size: 13px;
+  color: #666;
+  margin: 6px 0;
+  line-height: 1.4;
+}
+
+.difficulty-depth {
+  display: inline-block;
+  font-size: 11px;
+  background: #e8e8e8;
+  color: #555;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .difficulty-item {
+    padding: 12px;
+  }
+
+  .difficulty-radio {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+  }
+
+  .difficulty-icon {
+    font-size: 20px;
+  }
+
+  .difficulty-label {
+    font-size: 15px;
+  }
+
+  .difficulty-description {
+    font-size: 12px;
+  }
+}
+
+/* ========================================
+   COLOR VARIATIONS (Optional Enhancement)
+   ======================================== */
+
+.difficulty-item.easy {
+  --difficulty-color: #2ecc71;
+  --difficulty-light: #d5f4e6;
+}
+
+.difficulty-item.medium {
+  --difficulty-color: #f39c12;
+  --difficulty-light: #fdebd0;
+}
+
+.difficulty-item.hard {
+  --difficulty-color: #e74c3c;
+  --difficulty-light: #fadbd8;
+}
+
+.difficulty-item.expert {
+  --difficulty-color: #8e44ad;
+  --difficulty-light: #ebdef0;
+}
+
+/* Optional: Add color accent on left side */
+.difficulty-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 10px 0 0 10px;
+  background: var(--difficulty-color, #4a90e2);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.difficulty-item.selected::before {
+  opacity: 1;
+}
