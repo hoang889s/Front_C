@@ -25,6 +25,7 @@ export const useGame = (token) => {
         isAI: cached.isAI ?? false,  // ← THÊM AI flag
         aiThinking: false,  // ← THÊM state "đang suy nghĩ"
         aiDifficulty: cached.ai_difficulty ?? "medium",
+        moves:[],// Thêm moves ở khởi tạo
       };
     }
     return {
@@ -46,6 +47,7 @@ export const useGame = (token) => {
       isAI: false,
       aiThinking: false,
       aiDifficulty: "medium",
+      moves:[]// thêm nữa ở đây
     };
   });
 
@@ -118,6 +120,7 @@ export const useGame = (token) => {
         isAI: isAIGame,
         aiThinking: false,
         aiDifficulty: data.ai_difficulty ?? "medium",
+        moves:data.moves,// thêm ở dây
       }));
 
       // ← THÊM: Nếu là AI game và lượt của AI, emit ai_move sau 1s
@@ -157,6 +160,7 @@ export const useGame = (token) => {
         reason: data.reason ?? null,
         aiThinking: false,
         aiDifficulty: data.ai_difficulty ?? prev.aiDifficulty,
+        moves: [...(prev.moves || []), data.move],// thêm ở đây
       }));
 
       // ← THÊM: Kiểm tra xem có phải lượt AI không
@@ -204,6 +208,7 @@ export const useGame = (token) => {
         gameStatus: data.game_status ?? prev.gameStatus,
         winner: data.winner ?? null,
         aiThinking: false,
+        moves: [...(prev.moves || []), data.move],// thêm ở đây
       }));
     };
 

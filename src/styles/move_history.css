@@ -1,0 +1,80 @@
+.move-history {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    overflow: visible;
+}
+
+.move-history-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border);
+    background: rgba(171, 147, 123, 0.08);
+    flex-shrink: 0;
+}
+
+.move-history-header h3 {
+    font-size: 16px;
+    color: var(--color-dark);
+    margin: 0;
+}
+
+.move-list {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    list-style: none;
+    margin: 0;
+    flex-wrap: wrap;
+    gap: 0;
+    overflow: visible;
+}
+
+.move-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: rgba(206, 191, 160, 0.08);
+    transition: 0.2s ease;
+    flex-shrink: 0;
+}
+
+.move-item:hover {
+    background: rgba(171, 147, 123, 0.15);
+}
+
+.move-item:last-child {
+    margin-bottom: 0;
+}
+
+.move-index {
+    min-width: 30px;
+    font-weight: bold;
+    color: var(--color-accent);
+    font-size: 14px;
+}
+
+.move-text {
+    font-family: monospace;
+    color: var(--color-dark);
+    font-size: 14px;
+    flex: 1;
+    word-break: break-all;
+}
+
+/* Empty state */
+.move-history-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 10px;
+    color: #999;
+    font-style: italic;
+    font-size: 14px;
+}
