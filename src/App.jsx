@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import GamePage from "./pages/GamePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import RoomCreate from "./components/Room/RoomCreate";
+import ReplayPage from "./pages/ReplayPage";
 
 // Components
 import Navbar from "./components/Common/Navbar";
@@ -50,6 +51,15 @@ const App = () => {
             element={
                 <GamePage/>
             }
+        />
+
+        {/* Replay */}
+        <Route
+          path="/replay/:gameId"
+          element={
+            <AuthGuard><ReplayPage /> </AuthGuard>
+          }
+        
         />
 
         {/* 404 */}

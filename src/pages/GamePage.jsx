@@ -18,6 +18,7 @@ import IconCopy from "../assets/copy.svg?react";
 import Iconexit from "../assets/exit.svg?react";
 import IconHand from "../assets/hand.svg?react";
 import IconFlag from "../assets/flag.svg?react";
+import IconTv from "../assets/tv.svg?react";
 const GamePage = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
@@ -416,7 +417,23 @@ const GamePage = () => {
                 </button>
               </div>
             )}
- 
+            {/* VIEW REPLAY BUTTON */}
+            {gameState.status !== "ongoing" && (
+              <button
+                className="btn btn-replay"
+                onClick={() => navigate(`/replay/${gameState.gameId}`)}
+                title="Watch the game replay"
+              >
+                <div className="box-icon">
+                  <div>
+                    <IconTv className="iconexit"/>
+                  </div>
+                  <div>
+                    <p>View Replay</p>
+                  </div>
+                </div>
+              </button>
+            )}
             {/* LEAVE BUTTON */}
             <button className="btn btn-leave" onClick={handleLeave}>
               <div className="box-icon">

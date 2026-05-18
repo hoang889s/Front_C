@@ -1,0 +1,118 @@
+:root {
+  --board-light: #cebfa0;
+  --board-dark: #a9947b;
+  --board-selected: #f0e68c;
+  --board-selected-alpha: rgba(240, 230, 140, 0.5);
+  --board-disabled-alpha: rgba(0, 0, 0, 0.3);
+  --transition-speed: 0.2s;
+  
+  /* Thêm một vài màu bổ trợ để giao diện hoàn thiện hơn */
+  --bg-main: #fcfaf7;
+  --text-main: #3e3830;
+  --text-muted: #7a7063;
+  --border-color: #dcd1be;
+}
+
+.replay-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  max-width: 520px;
+  margin: 20px auto;
+}
+
+/* Tiêu đề trận đấu */
+.replay-container h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+/* Hiển thị số lượt đi (Move X/Y) */
+.move-counter {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 20px;
+  background-color: var(--border-color);
+  padding: 4px 12px;
+  border-radius: 16px;
+}
+
+/* Vùng chứa các nút điều khiển */
+.controls {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Style cho các nút bấm Previous / Next */
+.controls button {
+  flex: 1;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--bg-main);
+  background-color: var(--board-dark);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease, transform 0.1s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.controls button:hover {
+  background-color: #8f7d66; /* Màu tối hơn của bàn cờ khi hover */
+}
+
+.controls button:active {
+  transform: scale(0.98);
+}
+
+/* Style xử lý trạng thái nút bị disabled khi ở đầu hoặc cuối trận */
+.controls button:disabled {
+  background-color: var(--board-light);
+  color: var(--text-muted);
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.replay-slider {
+    width: 100%;
+    margin: 20px 0;
+}
+
+.controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.speed-control {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.controls button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
