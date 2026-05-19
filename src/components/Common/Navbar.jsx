@@ -27,11 +27,11 @@ const Navbar = () => {
       </div>
 
       <div className="nav-links">
-        <Link title="Home" to="/" className="nav-link">Home</Link>
+        <Link title="Home" to="/" className="nav-link">Trang chủ</Link>
 
         {token ? (
           <button className="logout-btn" onClick={handleLogout}>
-            Logout
+            Đăng xuất
           </button>
         ) : (
           <Link to="/login" className="nav-link">

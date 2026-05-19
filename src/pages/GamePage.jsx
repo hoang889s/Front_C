@@ -260,7 +260,7 @@ const GamePage = () => {
  
           <div className="navbar-right">
             <span className="room-code">
-              Room: <strong>{gameState.roomCode || "—"}</strong>
+              Phòng: <strong>{gameState.roomCode || "—"}</strong>
             </span>
             <button
               className="copy-btn"
@@ -376,7 +376,7 @@ const GamePage = () => {
  
             {/* MOVE HISTORY */}
             <div className="move-history-section">
-              <h3 className="section-title">Moves</h3>
+              <h3 className="section-title">Di chuyển</h3>
               <MoveHistory moves={gameState.moves || []} />
             </div>
  
@@ -394,7 +394,7 @@ const GamePage = () => {
                       <IconFlag className="iconexit"/>
                     </div>
                     <div>
-                       <p>Resign</p>
+                       <p>Đầu hàng</p>
                     </div>
                  </div>
                 </button>
@@ -411,7 +411,7 @@ const GamePage = () => {
                   <div className="box-icon">
                     <div><IconHand className="iconexit"/></div>
                     <div>
-                      <p> Offer Draw</p>
+                      <p> Đề nghị hòa</p>
                     </div>
                   </div>
                 </button>
@@ -429,7 +429,7 @@ const GamePage = () => {
                     <IconTv className="iconexit"/>
                   </div>
                   <div>
-                    <p>View Replay</p>
+                    <p>Xem lại</p>
                   </div>
                 </div>
               </button>
@@ -441,7 +441,7 @@ const GamePage = () => {
                   <Iconexit className="iconexit" />
                 </div>
                 <div>
-                  <p>Leave game</p>
+                  <p>Thoát game</p>
                 </div>
               </div>
             </button>

@@ -1,0 +1,43 @@
+.app-footer {
+  width: 100%;
+
+  background: var(--color-dark);
+  border-top: 1px solid var(--color-border);
+
+  padding: 14px 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-shadow: var(--shadow-md);
+
+  margin-top: 40px;
+}
+
+.app-footer-container {
+  text-align: center;
+}
+
+.app-footer-warning {
+  margin: 0;
+
+  color: var(--color-warning);
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: var(--transition);
+}
+
+.app-footer-title {
+  margin-top: 4px;
+
+  color: var(--color-accent);
+
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+
+  opacity: 0.9;
+}

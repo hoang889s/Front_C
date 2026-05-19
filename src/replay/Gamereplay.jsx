@@ -1,8 +1,7 @@
 import { useEffect, useState,useRef } from "react";
 import { replayApi } from "../services/api/replayApi";
 import Board from "../components/Game/Board";
-import "../styles/game-replay.css"; // 1. Import file CSS vào đây
-
+import "../styles/game-replay.css"; 
 const GameReplay = ({ gameId, token }) => {
     const [frames, setFrames] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
